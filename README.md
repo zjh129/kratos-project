@@ -6,9 +6,31 @@
 
 通过kratos框架运行的服务，例如grpc、http、cron、mq消费等，为后续的kratos项目开发提供参考。
 
-## Install Kratos
+## 新建API或grpc协议文件
+```bash
+# 新建http服务协议文件
+kratos proto add api/http_admin/user.proto
+# 新建grpc服务协议文件
+kratos proto add api/grpc_user/user.proto
+# 新建mq消费数据协议文件
+kratos proto add api/mq/user.proto
 ```
-go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
+
+## 新建服务
+```bash
+# 新建http服务
+kratos new app/http_admin/ --nomod
+# 新建grpc服务
+kratos new app/grpc_user/ --nomod
+# 新建cron服务
+kratos new app/cron/ --nomod
+# 新建mq消费服务
+kratos new app/mq_consume/ --nomod
+```
+
+## 安装环境
+```
+make init
 ```
 ## Create a service
 ```
@@ -36,6 +58,7 @@ make api
 # Generate all files
 make all
 ```
+
 ## Automated Initialization (wire)
 ```
 # install wire
@@ -54,4 +77,3 @@ docker build -t <your-docker-image-name> .
 # run
 docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
 ```
-
