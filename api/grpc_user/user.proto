@@ -1,30 +1,85 @@
 syntax = "proto3";
 
-package api.grpc_user;
+package grpc_user;
 
 option go_package = "kratos-project/api/grpc_user;grpc_user";
 option java_multiple_files = true;
 option java_package = "api.grpc_user";
 
 service User {
-	rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
-	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
-	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
-	rpc GetUser (GetUserRequest) returns (GetUserReply);
-	rpc ListUser (ListUserRequest) returns (ListUserReply);
+    rpc UserFind (UserInfoRequest) returns (UserInfo);
+    rpc UserList (UserListRequest) returns (UserListReply);
+    rpc UserSave (UserSaveRequest) returns (UserSaveReply);
+    rpc UserDelete (UserDeleteRequest) returns (UserDeleteReply);
 }
 
-message CreateUserRequest {}
-message CreateUserReply {}
+// The request message containing the user's id.
+message UserInfoRequest {
+    int64 id = 1; // 用户ID
+    string account = 2; // 用户名称
+}
 
-message UpdateUserRequest {}
-message UpdateUserReply {}
+// The user type
+enum UserType {
+    USER_TYPE_UNSPECIFIED = 0;
+    USER_TYPE_OA = 1;
+    USER_TYPE_NORMAL = 2;
+}
 
-message DeleteUserRequest {}
-message DeleteUserReply {}
+// The user status
+enum UserStatus {
+    USER_STATUS_UNSPECIFIED = 0;
+    USER_STATUS_ENABLE = 1;
+    USER_STATUS_DISABLE = 2;
+}
 
-message GetUserRequest {}
-message GetUserReply {}
+// The response message containing the user info
+message UserInfo {
+    int64 id = 1; // 用户ID
+    string account = 2; // 用户账号
+    string password = 3; // 用户密码
+    string name = 4; // 用户名称
+    string avatar = 5; // 用户头像地址
+    bool is_enable = 6; // 可用状态(0:禁用,1:启用)
+    string created_at = 7; // 添加时间
+    string updated_at = 8; // 修改时间
+}
 
-message ListUserRequest {}
-message ListUserReply {}
+// The request message containing the user's list
+message UserListRequest {
+    int64 page = 1;
+    int64 page_size = 2;
+    string name = 3;
+    UserType type = 4;
+    UserStatus status = 5;
+}
+
+// The response message containing the user list
+message UserListReply {
+    repeated UserInfo list = 1;
+}
+
+// The request message containing the user's info
+message UserSaveRequest {
+    int64 id = 1;
+    string name = 2;
+    string avatar = 3;
+    UserType type = 4;
+    bool is_enable = 5;
+    UserStatus status = 6;
+}
+
+// The response message containing the user save
+message UserSaveReply {
+    int64 id = 1;
+}
+
+// The request message containing the user's id
+message UserDeleteRequest {
+    int64 id = 1;
+}
+
+// The response message containing the user delete
+message UserDeleteReply {
+    int64 id = 1;
+}

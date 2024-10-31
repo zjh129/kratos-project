@@ -1,30 +1,54 @@
 syntax = "proto3";
 
-package api.http_app;
+package http_app;
+
+import "google/api/annotations.proto";
 
 option go_package = "kratos-project/api/http_app;http_app";
-option java_multiple_files = true;
-option java_package = "api.http_app";
 
 service User {
-	rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
-	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
-	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
-	rpc GetUser (GetUserRequest) returns (GetUserReply);
-	rpc ListUser (ListUserRequest) returns (ListUserReply);
+	rpc UserLogin (UserLoginRequest) returns (UserLoginReply) {
+		option (google.api.http) = {
+			post: "/login"
+			body: "*"
+		};
+	};
+	rpc UserLogout (UserLogoutRequest) returns (UserLogoutReply) {
+		option (google.api.http) = {
+			post: "/logout"
+			body: "*"
+		};
+	};
+	rpc UserInfo (UserInfoRequest) returns (UserInfoReply) {
+		option (google.api.http) = {
+			get: "/user"
+			body: "*"
+		};
+	};
 }
 
-message CreateUserRequest {}
-message CreateUserReply {}
+message UserLoginRequest {
+	string account = 1;
+	string password = 2;
+}
 
-message UpdateUserRequest {}
-message UpdateUserReply {}
+message UserLoginReply {
+	string token = 1;
+}
 
-message DeleteUserRequest {}
-message DeleteUserReply {}
+message UserLogoutRequest {
+	string token = 1;
+}
 
-message GetUserRequest {}
-message GetUserReply {}
+message UserLogoutReply {}
 
-message ListUserRequest {}
-message ListUserReply {}
+message UserInfoRequest {
+	string token = 1;
+}
+
+message UserInfoReply {
+	int64 id = 1;
+	string account = 2;
+	string name = 3;
+	string avatar = 4;
+}

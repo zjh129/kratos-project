@@ -1,30 +1,112 @@
 syntax = "proto3";
 
-package api.http_admin;
+package http_admin;
+
+import "google/api/annotations.proto";
 
 option go_package = "kratos-project/api/http_admin;http_admin";
 option java_multiple_files = true;
 option java_package = "api.http_admin";
 
 service User {
-	rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
-	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
-	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
-	rpc GetUser (GetUserRequest) returns (GetUserReply);
-	rpc ListUser (ListUserRequest) returns (ListUserReply);
+	rpc UserLogin (UserLoginRequest) returns (UserLoginReply) {
+		option (google.api.http) = {
+			post: "/login"
+			body: "*"
+		};
+	};
+	rpc UserLogout (UserLogoutRequest) returns (UserLogoutReply) {
+		option (google.api.http) = {
+			post: "/logout"
+			body: "*"
+		};
+	};
+	rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
+		option (google.api.http) = {
+			post: "/user"
+			body: "*"
+		};
+	};
+	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply) {
+		option (google.api.http) = {
+			put: "/user"
+			body: "*"
+		};
+	};
+	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
+		option (google.api.http) = {
+			delete: "/user"
+			body: "*"
+		};
+	};
+	rpc ListUser (ListUserRequest) returns (ListUserReply) {
+		option (google.api.http) = {
+			get: "/users"
+			body: "*"
+		};
+	};
 }
 
-message CreateUserRequest {}
-message CreateUserReply {}
+message UserLoginRequest {
+	string account = 1;
+	string password = 2;
+}
 
-message UpdateUserRequest {}
+message UserLoginReply {
+	string token = 1;
+}
+
+message UserLogoutRequest {
+	string token = 1;
+}
+
+message UserLogoutReply {}
+
+message CreateUserRequest {
+	string account = 1; // 用户账号
+	string password = 2; // 用户密码
+	string name = 3; // 用户名称
+	string avatar = 4; // 用户头像地址
+	bool is_enable = 5; // 可用状态(0:禁用,1:启用)
+}
+
+message CreateUserReply {
+	int64 id = 1;
+}
+
+message UpdateUserRequest {
+	int64 id = 1;
+	string account = 2; // 用户账号
+	string password = 3; // 用户密码
+	string name = 4; // 用户名称
+	string avatar = 5; // 用户头像地址
+	bool is_enable = 6; // 可用状态(0:禁用,1:启用)
+}
+
 message UpdateUserReply {}
 
-message DeleteUserRequest {}
+message DeleteUserRequest {
+	int64 id = 1;
+}
+
 message DeleteUserReply {}
 
-message GetUserRequest {}
-message GetUserReply {}
+message ListUserRequest {
+	int64 page = 1;
+	int64 page_size = 2;
+	string name = 3;
+}
 
-message ListUserRequest {}
-message ListUserReply {}
+message ListUserReply {
+	repeated UserInfo list = 1;
+}
+
+message UserInfo {
+	int64 id = 1; // 用户ID
+	string account = 2; // 用户账号
+	string name = 3; // 用户名称
+	string avatar = 4; // 用户头像地址
+	bool is_enable = 5; // 可用状态(0:禁用,1:启用)
+	string created_at = 6; // 添加时间
+	string updated_at = 7; // 修改时间
+}

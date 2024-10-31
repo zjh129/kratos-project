@@ -1,13 +1,17 @@
 syntax = "proto3";
 
-package helloworld.v1;
+package http_app;
 
-option go_package = "kratos-project/api/helloworld/v1;v1";
-option java_multiple_files = true;
-option java_package = "helloworld.v1";
-option objc_class_prefix = "APIHelloworldV1";
+import "errors/errors.proto";
+
+option go_package = "kratos-project/api/http_app;http_app";
 
 enum ErrorReason {
+  // 设置缺省错误码
+  option (errors.default_code) = 500;
+
   GREETER_UNSPECIFIED = 0;
-  USER_NOT_FOUND = 1;
+
+  USER_LOGIN_FAILED = 1 [(errors.code) = 401];
+  USER_NOT_FOUND = 2 [(errors.code) = 404];
 }
