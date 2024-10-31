@@ -1,0 +1,106 @@
+services:
+  consul:
+    image: hashicorp/consul
+    restart: always
+    container_name: consul_server
+    network_mode: bridge
+    volumes:
+      - /data/consul:/tmp/consul
+    ports:
+      - 8300:8300
+      - 8301:8301
+      - 8301:8301/udp
+      - 8302:8302
+      - 8302:8302/udp
+      - 8400:8400
+      - 8500:8500
+      - 53:53/udp
+    command: consul agent -data-dir=/tmp/consul -dev -client=0.0.0.0
+  db:
+    image: mysql:latest
+    container_name: mysql_server
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=kratos_learn
+    volumes:
+      - /data/db:/var/lib/mysql
+  redis:
+    image: redis:latest
+    container_name: redis_server
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - /data/redis/dаta:/root/redis
+      - /data/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=123456
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+  elasticsearch:
+    profiles:
+      - "elasticsearch"
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.4.2
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    networks:
+      - skywalking
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  oap-base: &oap-base
+    profiles: [ "none" ]
+    image: ghcr.io/apache/skywalking/oap:latest
+    ports:
+      - "11800:11800"
+      - "12800:12800"
+    networks:
+      - skywalking
+    healthcheck:
+      test: [ "CMD-SHELL", "curl http://localhost:12800/internal/l7check" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    environment: &oap-env
+      SW_HEALTH_CHECKER: default
+      SW_TELEMETRY: prometheus
+      JAVA_OPTS: "-Xms2048m -Xmx2048m"
+  oap-es:
+    <<: *oap-base
+    profiles:
+      - "elasticsearch"
+    container_name: oap
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      <<: *oap-env
+      SW_STORAGE: elasticsearch
+      SW_STORAGE_ES_CLUSTER_NODES: elasticsearch:9200
+  skywalking-ui:
+    image: ghcr.io/apache/skywalking/ui:latest
+    container_name: ui
+    ports:
+      - "8080:8080"
+    networks:
+      - skywalking
+    environment:
+      SW_OAP_ADDRESS: http://oap:12800
+      SW_ZIPKIN_ADDRESS: http://oap:9412
+networks:
+  skywalking:

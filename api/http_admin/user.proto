@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.http_admin;
+
+option go_package = "kratos-project/api/http_admin;http_admin";
+option java_multiple_files = true;
+option java_package = "api.http_admin";
+
+service User {
+	rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
+	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
+	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
+	rpc GetUser (GetUserRequest) returns (GetUserReply);
+	rpc ListUser (ListUserRequest) returns (ListUserReply);
+}
+
+message CreateUserRequest {}
+message CreateUserReply {}
+
+message UpdateUserRequest {}
+message UpdateUserReply {}
+
+message DeleteUserRequest {}
+message DeleteUserReply {}
+
+message GetUserRequest {}
+message GetUserReply {}
+
+message ListUserRequest {}
+message ListUserReply {}
