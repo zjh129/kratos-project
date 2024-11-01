@@ -9,10 +9,12 @@ ifeq ($(GOHOSTOS), windows)
 	#Git_Bash= $(subst cmd\,bin\bash.exe,$(dir $(shell where git)))
 	Git_Bash=$(subst \,/,$(subst cmd\,bin\bash.exe,$(dir $(shell where git))))
 	INTERNAL_PROTO_FILES=$(shell $(Git_Bash) -c "find internal -name *.proto")
-	API_PROTO_FILES=$(shell $(Git_Bash) -c "find api -name *.proto")
+	API_PROTO_FILES=$(shell $(Git_Bash) -c "find api/http* -name *.proto")
+	GRPC_PROTO_FILES=$(shell $(Git_Bash) -c "find api/grpc* -name *.proto")
 else
 	INTERNAL_PROTO_FILES=$(shell find internal -name *.proto)
-	API_PROTO_FILES=$(shell find api -name *.proto)
+	API_PROTO_FILES=$(shell find api/http* -name *.proto)
+	GRPC_PROTO_FILES=$(shell find api/grpc* -name *.proto)
 endif
 
 .PHONY: init
@@ -41,9 +43,17 @@ api:
 	       --proto_path=./third_party \
  	       --go_out=paths=source_relative:./api \
  	       --go-http_out=paths=source_relative:./api \
- 	       --go-grpc_out=paths=source_relative:./api \
 	       --openapi_out=fq_schema_naming=true,default_response=false,naming=proto:. \
 	       $(API_PROTO_FILES)
+
+.PHONY: rpc
+# generate grpc proto
+rpc:
+	protoc --proto_path=./api \
+	       --proto_path=./third_party \
+ 	       --go_out=paths=source_relative:./api \
+ 	       --go-grpc_out=paths=source_relative:./api \
+	       $(GRPC_PROTO_FILES)
 
 # generate api errors
 errors:
