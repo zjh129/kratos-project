@@ -35,14 +35,17 @@ service User {
 	};
 	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
 		option (google.api.http) = {
-			delete: "/user"
-			body: "*"
+			delete: "/user/{id}"
 		};
 	};
 	rpc ListUser (ListUserRequest) returns (ListUserReply) {
 		option (google.api.http) = {
 			get: "/users"
-			body: "*"
+		};
+	};
+	rpc FindUser (FindUserRequest) returns (FindUserReply) {
+		option (google.api.http) = {
+			get: "/user/{id}"
 		};
 	};
 }
@@ -109,4 +112,12 @@ message UserInfo {
 	bool is_enable = 5; // 可用状态(0:禁用,1:启用)
 	string created_at = 6; // 添加时间
 	string updated_at = 7; // 修改时间
+}
+
+message FindUserRequest {
+	int64 id = 1;
+}
+
+message FindUserReply {
+	UserInfo user = 1;
 }

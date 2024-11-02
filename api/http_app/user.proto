@@ -22,7 +22,6 @@ service User {
 	rpc UserInfo (UserInfoRequest) returns (UserInfoReply) {
 		option (google.api.http) = {
 			get: "/user"
-			body: "*"
 		};
 	};
 }

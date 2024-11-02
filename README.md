@@ -1,6 +1,6 @@
 # Kratos项目实践
 
-- 项目使用makefile管理操作命令，在linux、mac下运行更佳，windows默认不支持make命令，windows用户可以选择在wsl子系统下开发，或者在windows下安装make命令，[安装教程](https://www.cnblogs.com/bangbangzoutianya/p/17402641.html)。
+- 项目使用makefile管理操作命令，在linux、mac下运行更佳，windows默认不支持make命令，windows用户可以选择在wsl子系统下开发。
 - 该项目是基于Kratos框架的项目实践，主要是为了学习Kratos框架的使用，以及对项目的一些实践。
 - 通过kratos框架运行的服务，例如grpc、http、cron、mq消费等，为后续的kratos项目开发提供参考。
 - 该项目使用微服务大仓库模式，即一个仓库包含多个服务，每个服务都是一个独立的服务，通过make命令进行统一管理。
