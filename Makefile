@@ -88,10 +88,10 @@ generate:
 run:
 	kratos run
 
-.PHONY: soft
+.PHONY: docker
 # soft
-soft:
-	cd soft && \
+docker:
+	cd docker && \
  	docker-compose rm && \
  	docker-compose up -d
 
