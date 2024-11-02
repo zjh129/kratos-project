@@ -15,52 +15,18 @@ else
 	API_PROTO_FILES=$(shell find api -name *.proto)
 endif
 
-.PHONY: init
-# init env
-init:
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
-	go install github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
-	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
-	go install github.com/google/wire/cmd/wire@latest
+.PHONY: entinit
+entinit:
+	cd internal/data/ && go run -mod=mod entgo.io/ent/cmd/ent init
 
-.PHONY: config
-# generate internal proto
-config:
-	protoc --proto_path=./internal \
-	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./internal \
-	       $(INTERNAL_PROTO_FILES)
+.PHONY: ent
+ent:
+	cd internal/data/ && go run -mod=mod entgo.io/ent/cmd/ent generate --feature intercept ./ent/schema
 
-.PHONY: api
-# generate api proto
-api:
-	protoc --proto_path=./api \
-	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./api \
- 	       --go-http_out=paths=source_relative:./api \
- 	       --go-grpc_out=paths=source_relative:./api \
-	       --openapi_out=fq_schema_naming=true,default_response=false:. \
-	       $(API_PROTO_FILES)
-
-.PHONY: build
-# build
-build:
-	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./...
-
-.PHONY: generate
-# generate
-generate:
-	go generate ./...
-	go mod tidy
-
-.PHONY: all
-# generate all
-all:
-	make api;
-	make config;
-	make generate;
+.PHONY: entimport
+entimport:
+	cd internal/data/ && \
+    go run -mod=mod ariga.io/entimport/cmd/entimport -dsn "mysql://root:root@tcp(127.0.0.1:3306)/kratos_project"
 
 # show help
 help:
