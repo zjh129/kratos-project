@@ -40,23 +40,26 @@ message UserInfo {
     string password = 3; // 用户密码
     string name = 4; // 用户名称
     string avatar = 5; // 用户头像地址
-    bool is_enable = 6; // 可用状态(0:禁用,1:启用)
-    string created_at = 7; // 添加时间
-    string updated_at = 8; // 修改时间
+    UserType type = 6; // 用户类型
+    UserStatus status_is = 7; // 用户状态
+    string created_at = 8; // 添加时间
+    string updated_at = 9; // 修改时间
 }
 
 // The request message containing the user's list
 message UserListRequest {
-    int64 page = 1;
-    int64 page_size = 2;
-    string name = 3;
-    UserType type = 4;
-    UserStatus status = 5;
+    int64 page = 1; // 页码
+    int64 page_size = 2; // 每页数量
+    string account = 3; // 用户账号
+    string name = 4; // 用户名称
+    UserType type = 5; // 用户类型
+    UserStatus status_is = 6; // 用户状态
 }
 
 // The response message containing the user list
 message UserListReply {
     repeated UserInfo list = 1;
+    int64 total = 2;
 }
 
 // The request message containing the user's info

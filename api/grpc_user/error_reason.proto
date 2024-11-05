@@ -1,14 +1,20 @@
 syntax = "proto3";
 
-package helloworld.v1;
+package grpc_user;
+
+import "errors/errors.proto";
 
 option go_package = "kratos-project/api/grpc_user;grpc_user";
 option java_multiple_files = true;
-option java_package = "grpc_user.v1";
-option objc_class_prefix = "APIGrpcUserV1";
+option java_package = "grpc_use";
+option objc_class_prefix = "APIGrpcUser";
 
 enum ErrorReason {
-    GREETER_UNSPECIFIED = 0;
+    // 设置缺省错误码
+    option (errors.default_code) = 500;
+
+    USER_UNSPECIFIED = 0;
     USER_NOT_FOUND = 1;
     USER_ALREADY_EXISTS = 2;
+    INVALID_ARGUMENT = 3;
 }
