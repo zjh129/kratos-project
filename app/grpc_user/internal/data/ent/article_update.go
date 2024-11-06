@@ -28,6 +28,26 @@ func (au *ArticleUpdate) Where(ps ...predicate.Article) *ArticleUpdate {
 	return au
 }
 
+// SetDeleteTime sets the "delete_time" field.
+func (au *ArticleUpdate) SetDeleteTime(t time.Time) *ArticleUpdate {
+	au.mutation.SetDeleteTime(t)
+	return au
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (au *ArticleUpdate) SetNillableDeleteTime(t *time.Time) *ArticleUpdate {
+	if t != nil {
+		au.SetDeleteTime(*t)
+	}
+	return au
+}
+
+// ClearDeleteTime clears the value of the "delete_time" field.
+func (au *ArticleUpdate) ClearDeleteTime() *ArticleUpdate {
+	au.mutation.ClearDeleteTime()
+	return au
+}
+
 // SetTitle sets the "title" field.
 func (au *ArticleUpdate) SetTitle(s string) *ArticleUpdate {
 	au.mutation.SetTitle(s)
@@ -145,6 +165,12 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := au.mutation.DeleteTime(); ok {
+		_spec.SetField(article.FieldDeleteTime, field.TypeTime, value)
+	}
+	if au.mutation.DeleteTimeCleared() {
+		_spec.ClearField(article.FieldDeleteTime, field.TypeTime)
+	}
 	if value, ok := au.mutation.Title(); ok {
 		_spec.SetField(article.FieldTitle, field.TypeString, value)
 	}
@@ -181,6 +207,26 @@ type ArticleUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ArticleMutation
+}
+
+// SetDeleteTime sets the "delete_time" field.
+func (auo *ArticleUpdateOne) SetDeleteTime(t time.Time) *ArticleUpdateOne {
+	auo.mutation.SetDeleteTime(t)
+	return auo
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (auo *ArticleUpdateOne) SetNillableDeleteTime(t *time.Time) *ArticleUpdateOne {
+	if t != nil {
+		auo.SetDeleteTime(*t)
+	}
+	return auo
+}
+
+// ClearDeleteTime clears the value of the "delete_time" field.
+func (auo *ArticleUpdateOne) ClearDeleteTime() *ArticleUpdateOne {
+	auo.mutation.ClearDeleteTime()
+	return auo
 }
 
 // SetTitle sets the "title" field.
@@ -329,6 +375,12 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := auo.mutation.DeleteTime(); ok {
+		_spec.SetField(article.FieldDeleteTime, field.TypeTime, value)
+	}
+	if auo.mutation.DeleteTimeCleared() {
+		_spec.ClearField(article.FieldDeleteTime, field.TypeTime)
 	}
 	if value, ok := auo.mutation.Title(); ok {
 		_spec.SetField(article.FieldTitle, field.TypeString, value)

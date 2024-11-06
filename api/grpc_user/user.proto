@@ -64,12 +64,13 @@ message UserListReply {
 
 // The request message containing the user's info
 message UserSaveRequest {
-    int64 id = 1;
-    string name = 2;
-    string avatar = 3;
-    UserType type = 4;
-    bool is_enable = 5;
-    UserStatus status = 6;
+    int64 id = 1; // 用户ID
+    string account = 2; // 用户账号
+    string password = 3; // 用户密码
+    string name = 4; // 用户名称
+    string avatar = 5; // 用户头像地址
+    UserType type = 6; // 用户类型
+    UserStatus status_is = 7; // 用户状态
 }
 
 // The response message containing the user save
@@ -80,9 +81,10 @@ message UserSaveReply {
 // The request message containing the user's id
 message UserDeleteRequest {
     int64 id = 1;
+    repeated int64 ids = 2;
 }
 
 // The response message containing the user delete
 message UserDeleteReply {
-    int64 id = 1;
+    repeated int64 ids = 1;
 }

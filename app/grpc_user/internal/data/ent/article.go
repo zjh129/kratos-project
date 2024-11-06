@@ -18,6 +18,8 @@ type Article struct {
 	// ID of the ent.
 	// 文章ID
 	ID int `json:"id,omitempty"`
+	// DeleteTime holds the value of the "delete_time" field.
+	DeleteTime time.Time `json:"delete_time,omitempty"`
 	// 文章标题
 	Title string `json:"title,omitempty"`
 	// 文章内容
@@ -40,7 +42,7 @@ func (*Article) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case article.FieldTitle, article.FieldContent:
 			values[i] = new(sql.NullString)
-		case article.FieldCreatedAt, article.FieldUpdatedAt, article.FieldDeletedAt:
+		case article.FieldDeleteTime, article.FieldCreatedAt, article.FieldUpdatedAt, article.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -63,6 +65,12 @@ func (a *Article) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			a.ID = int(value.Int64)
+		case article.FieldDeleteTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field delete_time", values[i])
+			} else if value.Valid {
+				a.DeleteTime = value.Time
+			}
 		case article.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
@@ -129,6 +137,9 @@ func (a *Article) String() string {
 	var builder strings.Builder
 	builder.WriteString("Article(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
+	builder.WriteString("delete_time=")
+	builder.WriteString(a.DeleteTime.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(a.Title)
 	builder.WriteString(", ")

@@ -3,6 +3,7 @@
 package userinfo
 
 import (
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -11,6 +12,8 @@ const (
 	Label = "user_info"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldDeleteTime holds the string denoting the delete_time field in the database.
+	FieldDeleteTime = "delete_time"
 	// FieldAccount holds the string denoting the account field in the database.
 	FieldAccount = "account"
 	// FieldPassword holds the string denoting the password field in the database.
@@ -19,8 +22,10 @@ const (
 	FieldName = "name"
 	// FieldAvatar holds the string denoting the avatar field in the database.
 	FieldAvatar = "avatar"
-	// FieldIsEnable holds the string denoting the is_enable field in the database.
-	FieldIsEnable = "is_enable"
+	// FieldType holds the string denoting the type field in the database.
+	FieldType = "type"
+	// FieldStatusIs holds the string denoting the status_is field in the database.
+	FieldStatusIs = "status_is"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -34,11 +39,13 @@ const (
 // Columns holds all SQL columns for userinfo fields.
 var Columns = []string{
 	FieldID,
+	FieldDeleteTime,
 	FieldAccount,
 	FieldPassword,
 	FieldName,
 	FieldAvatar,
-	FieldIsEnable,
+	FieldType,
+	FieldStatusIs,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldDeletedAt,
@@ -54,12 +61,27 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "kratos-project/app/grpc_user/internal/data/ent/runtime"
+var (
+	Hooks        [1]ent.Hook
+	Interceptors [1]ent.Interceptor
+)
+
 // OrderOption defines the ordering options for the UserInfo queries.
 type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByDeleteTime orders the results by the delete_time field.
+func ByDeleteTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeleteTime, opts...).ToFunc()
 }
 
 // ByAccount orders the results by the account field.
@@ -82,9 +104,14 @@ func ByAvatar(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAvatar, opts...).ToFunc()
 }
 
-// ByIsEnable orders the results by the is_enable field.
-func ByIsEnable(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldIsEnable, opts...).ToFunc()
+// ByType orders the results by the type field.
+func ByType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldType, opts...).ToFunc()
+}
+
+// ByStatusIs orders the results by the status_is field.
+func ByStatusIs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatusIs, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

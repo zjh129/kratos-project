@@ -18,6 +18,8 @@ type UserInfo struct {
 	// ID of the ent.
 	// 用户ID
 	ID int `json:"id,omitempty"`
+	// DeleteTime holds the value of the "delete_time" field.
+	DeleteTime time.Time `json:"delete_time,omitempty"`
 	// 用户账号
 	Account string `json:"account,omitempty"`
 	// 用户密码
@@ -26,8 +28,10 @@ type UserInfo struct {
 	Name string `json:"name,omitempty"`
 	// 用户头像地址
 	Avatar string `json:"avatar,omitempty"`
+	// 用户类别
+	Type int32 `json:"type,omitempty"`
 	// 可用状态(0:禁用,1:启用)
-	IsEnable bool `json:"is_enable,omitempty"`
+	StatusIs int32 `json:"status_is,omitempty"`
 	// 添加时间
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// 修改时间
@@ -42,13 +46,11 @@ func (*UserInfo) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case userinfo.FieldIsEnable:
-			values[i] = new(sql.NullBool)
-		case userinfo.FieldID:
+		case userinfo.FieldID, userinfo.FieldType, userinfo.FieldStatusIs:
 			values[i] = new(sql.NullInt64)
 		case userinfo.FieldAccount, userinfo.FieldPassword, userinfo.FieldName, userinfo.FieldAvatar:
 			values[i] = new(sql.NullString)
-		case userinfo.FieldCreatedAt, userinfo.FieldUpdatedAt, userinfo.FieldDeletedAt:
+		case userinfo.FieldDeleteTime, userinfo.FieldCreatedAt, userinfo.FieldUpdatedAt, userinfo.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -71,6 +73,12 @@ func (ui *UserInfo) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			ui.ID = int(value.Int64)
+		case userinfo.FieldDeleteTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field delete_time", values[i])
+			} else if value.Valid {
+				ui.DeleteTime = value.Time
+			}
 		case userinfo.FieldAccount:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field account", values[i])
@@ -95,11 +103,17 @@ func (ui *UserInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ui.Avatar = value.String
 			}
-		case userinfo.FieldIsEnable:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field is_enable", values[i])
+		case userinfo.FieldType:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				ui.IsEnable = value.Bool
+				ui.Type = int32(value.Int64)
+			}
+		case userinfo.FieldStatusIs:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field status_is", values[i])
+			} else if value.Valid {
+				ui.StatusIs = int32(value.Int64)
 			}
 		case userinfo.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -155,6 +169,9 @@ func (ui *UserInfo) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserInfo(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ui.ID))
+	builder.WriteString("delete_time=")
+	builder.WriteString(ui.DeleteTime.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("account=")
 	builder.WriteString(ui.Account)
 	builder.WriteString(", ")
@@ -167,8 +184,11 @@ func (ui *UserInfo) String() string {
 	builder.WriteString("avatar=")
 	builder.WriteString(ui.Avatar)
 	builder.WriteString(", ")
-	builder.WriteString("is_enable=")
-	builder.WriteString(fmt.Sprintf("%v", ui.IsEnable))
+	builder.WriteString("type=")
+	builder.WriteString(fmt.Sprintf("%v", ui.Type))
+	builder.WriteString(", ")
+	builder.WriteString("status_is=")
+	builder.WriteString(fmt.Sprintf("%v", ui.StatusIs))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(ui.CreatedAt.Format(time.ANSIC))

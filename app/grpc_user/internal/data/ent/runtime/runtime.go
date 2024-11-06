@@ -2,7 +2,27 @@
 
 package runtime
 
-// The schema-stitching logic is generated in kratos_project/app/grpc_user/internal/data/ent/runtime.go
+import (
+	"kratos-project/app/grpc_user/internal/data/ent/article"
+	"kratos-project/app/grpc_user/internal/data/ent/schema"
+	"kratos-project/app/grpc_user/internal/data/ent/userinfo"
+)
+
+// The init function reads all schema descriptors with runtime code
+// (default values, validators, hooks and policies) and stitches it
+// to their package variables.
+func init() {
+	articleMixin := schema.Article{}.Mixin()
+	articleMixinHooks0 := articleMixin[0].Hooks()
+	article.Hooks[0] = articleMixinHooks0[0]
+	articleMixinInters0 := articleMixin[0].Interceptors()
+	article.Interceptors[0] = articleMixinInters0[0]
+	userinfoMixin := schema.UserInfo{}.Mixin()
+	userinfoMixinHooks0 := userinfoMixin[0].Hooks()
+	userinfo.Hooks[0] = userinfoMixinHooks0[0]
+	userinfoMixinInters0 := userinfoMixin[0].Interceptors()
+	userinfo.Interceptors[0] = userinfoMixinInters0[0]
+}
 
 const (
 	Version = "v0.14.1"                                         // Version of ent codegen.

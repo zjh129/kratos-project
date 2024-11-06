@@ -262,12 +262,12 @@ func (uiq *UserInfoQuery) Clone() *UserInfoQuery {
 // Example:
 //
 //	var v []struct {
-//		Account string `json:"account,omitempty"`
+//		DeleteTime time.Time `json:"delete_time,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.UserInfo.Query().
-//		GroupBy(userinfo.FieldAccount).
+//		GroupBy(userinfo.FieldDeleteTime).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (uiq *UserInfoQuery) GroupBy(field string, fields ...string) *UserInfoGroupBy {
@@ -285,11 +285,11 @@ func (uiq *UserInfoQuery) GroupBy(field string, fields ...string) *UserInfoGroup
 // Example:
 //
 //	var v []struct {
-//		Account string `json:"account,omitempty"`
+//		DeleteTime time.Time `json:"delete_time,omitempty"`
 //	}
 //
 //	client.UserInfo.Query().
-//		Select(userinfo.FieldAccount).
+//		Select(userinfo.FieldDeleteTime).
 //		Scan(ctx, &v)
 func (uiq *UserInfoQuery) Select(fields ...string) *UserInfoSelect {
 	uiq.ctx.Fields = append(uiq.ctx.Fields, fields...)

@@ -20,6 +20,20 @@ type UserInfoCreate struct {
 	hooks    []Hook
 }
 
+// SetDeleteTime sets the "delete_time" field.
+func (uic *UserInfoCreate) SetDeleteTime(t time.Time) *UserInfoCreate {
+	uic.mutation.SetDeleteTime(t)
+	return uic
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (uic *UserInfoCreate) SetNillableDeleteTime(t *time.Time) *UserInfoCreate {
+	if t != nil {
+		uic.SetDeleteTime(*t)
+	}
+	return uic
+}
+
 // SetAccount sets the "account" field.
 func (uic *UserInfoCreate) SetAccount(s string) *UserInfoCreate {
 	uic.mutation.SetAccount(s)
@@ -44,17 +58,15 @@ func (uic *UserInfoCreate) SetAvatar(s string) *UserInfoCreate {
 	return uic
 }
 
-// SetNillableAvatar sets the "avatar" field if the given value is not nil.
-func (uic *UserInfoCreate) SetNillableAvatar(s *string) *UserInfoCreate {
-	if s != nil {
-		uic.SetAvatar(*s)
-	}
+// SetType sets the "type" field.
+func (uic *UserInfoCreate) SetType(i int32) *UserInfoCreate {
+	uic.mutation.SetType(i)
 	return uic
 }
 
-// SetIsEnable sets the "is_enable" field.
-func (uic *UserInfoCreate) SetIsEnable(b bool) *UserInfoCreate {
-	uic.mutation.SetIsEnable(b)
+// SetStatusIs sets the "status_is" field.
+func (uic *UserInfoCreate) SetStatusIs(i int32) *UserInfoCreate {
+	uic.mutation.SetStatusIs(i)
 	return uic
 }
 
@@ -133,8 +145,14 @@ func (uic *UserInfoCreate) check() error {
 	if _, ok := uic.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "UserInfo.name"`)}
 	}
-	if _, ok := uic.mutation.IsEnable(); !ok {
-		return &ValidationError{Name: "is_enable", err: errors.New(`ent: missing required field "UserInfo.is_enable"`)}
+	if _, ok := uic.mutation.Avatar(); !ok {
+		return &ValidationError{Name: "avatar", err: errors.New(`ent: missing required field "UserInfo.avatar"`)}
+	}
+	if _, ok := uic.mutation.GetType(); !ok {
+		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "UserInfo.type"`)}
+	}
+	if _, ok := uic.mutation.StatusIs(); !ok {
+		return &ValidationError{Name: "status_is", err: errors.New(`ent: missing required field "UserInfo.status_is"`)}
 	}
 	if _, ok := uic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserInfo.created_at"`)}
@@ -174,6 +192,10 @@ func (uic *UserInfoCreate) createSpec() (*UserInfo, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
+	if value, ok := uic.mutation.DeleteTime(); ok {
+		_spec.SetField(userinfo.FieldDeleteTime, field.TypeTime, value)
+		_node.DeleteTime = value
+	}
 	if value, ok := uic.mutation.Account(); ok {
 		_spec.SetField(userinfo.FieldAccount, field.TypeString, value)
 		_node.Account = value
@@ -190,9 +212,13 @@ func (uic *UserInfoCreate) createSpec() (*UserInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(userinfo.FieldAvatar, field.TypeString, value)
 		_node.Avatar = value
 	}
-	if value, ok := uic.mutation.IsEnable(); ok {
-		_spec.SetField(userinfo.FieldIsEnable, field.TypeBool, value)
-		_node.IsEnable = value
+	if value, ok := uic.mutation.GetType(); ok {
+		_spec.SetField(userinfo.FieldType, field.TypeInt32, value)
+		_node.Type = value
+	}
+	if value, ok := uic.mutation.StatusIs(); ok {
+		_spec.SetField(userinfo.FieldStatusIs, field.TypeInt32, value)
+		_node.StatusIs = value
 	}
 	if value, ok := uic.mutation.CreatedAt(); ok {
 		_spec.SetField(userinfo.FieldCreatedAt, field.TypeTime, value)

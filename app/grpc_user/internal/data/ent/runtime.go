@@ -2,8 +2,4 @@
 
 package ent
 
-// The init function reads all schema descriptors with runtime code
-// (default values, validators, hooks and policies) and stitches it
-// to their package variables.
-func init() {
-}
+// The schema-stitching logic is generated in kratos-project/app/grpc_user/internal/data/ent/runtime/runtime.go

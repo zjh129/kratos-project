@@ -317,12 +317,14 @@ func (c *ArticleClient) GetX(ctx context.Context, id int) *Article {
 
 // Hooks returns the client hooks.
 func (c *ArticleClient) Hooks() []Hook {
-	return c.hooks.Article
+	hooks := c.hooks.Article
+	return append(hooks[:len(hooks):len(hooks)], article.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *ArticleClient) Interceptors() []Interceptor {
-	return c.inters.Article
+	inters := c.inters.Article
+	return append(inters[:len(inters):len(inters)], article.Interceptors[:]...)
 }
 
 func (c *ArticleClient) mutate(ctx context.Context, m *ArticleMutation) (Value, error) {
@@ -450,12 +452,14 @@ func (c *UserInfoClient) GetX(ctx context.Context, id int) *UserInfo {
 
 // Hooks returns the client hooks.
 func (c *UserInfoClient) Hooks() []Hook {
-	return c.hooks.UserInfo
+	hooks := c.hooks.UserInfo
+	return append(hooks[:len(hooks):len(hooks)], userinfo.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *UserInfoClient) Interceptors() []Interceptor {
-	return c.inters.UserInfo
+	inters := c.inters.UserInfo
+	return append(inters[:len(inters):len(inters)], userinfo.Interceptors[:]...)
 }
 
 func (c *UserInfoClient) mutate(ctx context.Context, m *UserInfoMutation) (Value, error) {

@@ -54,6 +54,11 @@ func IDLTE(id int) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldLTE(FieldID, id))
 }
 
+// DeleteTime applies equality check predicate on the "delete_time" field. It's identical to DeleteTimeEQ.
+func DeleteTime(v time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldEQ(FieldDeleteTime, v))
+}
+
 // Account applies equality check predicate on the "account" field. It's identical to AccountEQ.
 func Account(v string) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldEQ(FieldAccount, v))
@@ -74,9 +79,14 @@ func Avatar(v string) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldEQ(FieldAvatar, v))
 }
 
-// IsEnable applies equality check predicate on the "is_enable" field. It's identical to IsEnableEQ.
-func IsEnable(v bool) predicate.UserInfo {
-	return predicate.UserInfo(sql.FieldEQ(FieldIsEnable, v))
+// Type applies equality check predicate on the "type" field. It's identical to TypeEQ.
+func Type(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldEQ(FieldType, v))
+}
+
+// StatusIs applies equality check predicate on the "status_is" field. It's identical to StatusIsEQ.
+func StatusIs(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldEQ(FieldStatusIs, v))
 }
 
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
@@ -92,6 +102,56 @@ func UpdatedAt(v time.Time) predicate.UserInfo {
 // DeletedAt applies equality check predicate on the "deleted_at" field. It's identical to DeletedAtEQ.
 func DeletedAt(v time.Time) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldEQ(FieldDeletedAt, v))
+}
+
+// DeleteTimeEQ applies the EQ predicate on the "delete_time" field.
+func DeleteTimeEQ(v time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldEQ(FieldDeleteTime, v))
+}
+
+// DeleteTimeNEQ applies the NEQ predicate on the "delete_time" field.
+func DeleteTimeNEQ(v time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNEQ(FieldDeleteTime, v))
+}
+
+// DeleteTimeIn applies the In predicate on the "delete_time" field.
+func DeleteTimeIn(vs ...time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldIn(FieldDeleteTime, vs...))
+}
+
+// DeleteTimeNotIn applies the NotIn predicate on the "delete_time" field.
+func DeleteTimeNotIn(vs ...time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNotIn(FieldDeleteTime, vs...))
+}
+
+// DeleteTimeGT applies the GT predicate on the "delete_time" field.
+func DeleteTimeGT(v time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldGT(FieldDeleteTime, v))
+}
+
+// DeleteTimeGTE applies the GTE predicate on the "delete_time" field.
+func DeleteTimeGTE(v time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldGTE(FieldDeleteTime, v))
+}
+
+// DeleteTimeLT applies the LT predicate on the "delete_time" field.
+func DeleteTimeLT(v time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldLT(FieldDeleteTime, v))
+}
+
+// DeleteTimeLTE applies the LTE predicate on the "delete_time" field.
+func DeleteTimeLTE(v time.Time) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldLTE(FieldDeleteTime, v))
+}
+
+// DeleteTimeIsNil applies the IsNil predicate on the "delete_time" field.
+func DeleteTimeIsNil() predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldIsNull(FieldDeleteTime))
+}
+
+// DeleteTimeNotNil applies the NotNil predicate on the "delete_time" field.
+func DeleteTimeNotNil() predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNotNull(FieldDeleteTime))
 }
 
 // AccountEQ applies the EQ predicate on the "account" field.
@@ -344,16 +404,6 @@ func AvatarHasSuffix(v string) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldHasSuffix(FieldAvatar, v))
 }
 
-// AvatarIsNil applies the IsNil predicate on the "avatar" field.
-func AvatarIsNil() predicate.UserInfo {
-	return predicate.UserInfo(sql.FieldIsNull(FieldAvatar))
-}
-
-// AvatarNotNil applies the NotNil predicate on the "avatar" field.
-func AvatarNotNil() predicate.UserInfo {
-	return predicate.UserInfo(sql.FieldNotNull(FieldAvatar))
-}
-
 // AvatarEqualFold applies the EqualFold predicate on the "avatar" field.
 func AvatarEqualFold(v string) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldEqualFold(FieldAvatar, v))
@@ -364,14 +414,84 @@ func AvatarContainsFold(v string) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldContainsFold(FieldAvatar, v))
 }
 
-// IsEnableEQ applies the EQ predicate on the "is_enable" field.
-func IsEnableEQ(v bool) predicate.UserInfo {
-	return predicate.UserInfo(sql.FieldEQ(FieldIsEnable, v))
+// TypeEQ applies the EQ predicate on the "type" field.
+func TypeEQ(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldEQ(FieldType, v))
 }
 
-// IsEnableNEQ applies the NEQ predicate on the "is_enable" field.
-func IsEnableNEQ(v bool) predicate.UserInfo {
-	return predicate.UserInfo(sql.FieldNEQ(FieldIsEnable, v))
+// TypeNEQ applies the NEQ predicate on the "type" field.
+func TypeNEQ(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNEQ(FieldType, v))
+}
+
+// TypeIn applies the In predicate on the "type" field.
+func TypeIn(vs ...int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldIn(FieldType, vs...))
+}
+
+// TypeNotIn applies the NotIn predicate on the "type" field.
+func TypeNotIn(vs ...int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNotIn(FieldType, vs...))
+}
+
+// TypeGT applies the GT predicate on the "type" field.
+func TypeGT(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldGT(FieldType, v))
+}
+
+// TypeGTE applies the GTE predicate on the "type" field.
+func TypeGTE(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldGTE(FieldType, v))
+}
+
+// TypeLT applies the LT predicate on the "type" field.
+func TypeLT(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldLT(FieldType, v))
+}
+
+// TypeLTE applies the LTE predicate on the "type" field.
+func TypeLTE(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldLTE(FieldType, v))
+}
+
+// StatusIsEQ applies the EQ predicate on the "status_is" field.
+func StatusIsEQ(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldEQ(FieldStatusIs, v))
+}
+
+// StatusIsNEQ applies the NEQ predicate on the "status_is" field.
+func StatusIsNEQ(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNEQ(FieldStatusIs, v))
+}
+
+// StatusIsIn applies the In predicate on the "status_is" field.
+func StatusIsIn(vs ...int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldIn(FieldStatusIs, vs...))
+}
+
+// StatusIsNotIn applies the NotIn predicate on the "status_is" field.
+func StatusIsNotIn(vs ...int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNotIn(FieldStatusIs, vs...))
+}
+
+// StatusIsGT applies the GT predicate on the "status_is" field.
+func StatusIsGT(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldGT(FieldStatusIs, v))
+}
+
+// StatusIsGTE applies the GTE predicate on the "status_is" field.
+func StatusIsGTE(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldGTE(FieldStatusIs, v))
+}
+
+// StatusIsLT applies the LT predicate on the "status_is" field.
+func StatusIsLT(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldLT(FieldStatusIs, v))
+}
+
+// StatusIsLTE applies the LTE predicate on the "status_is" field.
+func StatusIsLTE(v int32) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldLTE(FieldStatusIs, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

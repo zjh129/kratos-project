@@ -20,6 +20,20 @@ type ArticleCreate struct {
 	hooks    []Hook
 }
 
+// SetDeleteTime sets the "delete_time" field.
+func (ac *ArticleCreate) SetDeleteTime(t time.Time) *ArticleCreate {
+	ac.mutation.SetDeleteTime(t)
+	return ac
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (ac *ArticleCreate) SetNillableDeleteTime(t *time.Time) *ArticleCreate {
+	if t != nil {
+		ac.SetDeleteTime(*t)
+	}
+	return ac
+}
+
 // SetTitle sets the "title" field.
 func (ac *ArticleCreate) SetTitle(s string) *ArticleCreate {
 	ac.mutation.SetTitle(s)
@@ -141,6 +155,10 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 	if id, ok := ac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := ac.mutation.DeleteTime(); ok {
+		_spec.SetField(article.FieldDeleteTime, field.TypeTime, value)
+		_node.DeleteTime = value
 	}
 	if value, ok := ac.mutation.Title(); ok {
 		_spec.SetField(article.FieldTitle, field.TypeString, value)

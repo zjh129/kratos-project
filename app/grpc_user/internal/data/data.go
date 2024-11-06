@@ -24,15 +24,16 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewEntClient, NewJetCache)
+var ProviderSet = wire.NewSet(NewData, NewEntClient, NewJetCache, NewUserRepo)
 
 var ErrRecordNotFound = errors.New("record not found")
 
 // Data .
 type Data struct {
-	db    *ent.Client
-	cache cache.Cache
-	log   *log.Helper
+	db       *ent.Client
+	cache    cache.Cache
+	log      *log.Helper
+	userRepo *userRepo
 }
 
 // NewData .
@@ -41,12 +42,14 @@ func NewData(
 	logger log.Logger,
 	entClient *ent.Client,
 	jetCache cache.Cache,
+	userRepo *userRepo,
 ) (*Data, func(), error) {
 	log := log.NewHelper(log.With(logger, "module", "kratos-learn/data"))
 	d := &Data{
-		db:    entClient,
-		cache: jetCache,
-		log:   log,
+		db:       entClient,
+		cache:    jetCache,
+		log:      log,
+		userRepo: userRepo,
 	}
 	cleanup := func() {
 		if err := d.db.Close(); err != nil {

@@ -46,7 +46,8 @@ type UserRepo interface {
 	Save(context.Context, *User) (*User, error)
 	FindByID(context.Context, int64) (*User, error)
 	FindByAccount(context.Context, string) (*User, error)
-	PageList(context.Context, *UserListCondition) (*UserListResp, error)
+	Count(context.Context, *UserListCondition) (int64, error)
+	PageList(context.Context, *UserListCondition) ([]*User, error)
 	Delete(context.Context, []int64) error
 }
 
@@ -80,7 +81,19 @@ func (uc *UserUsecase) GetUserByAccount(ctx context.Context, account string) (*U
 }
 
 // GetUserList gets the specified User list.
-func (uc *UserUsecase) GetUserList(ctx context.Context, cond *UserListCondition) (*UserListResp, error) {
+func (uc *UserUsecase) GetUserList(ctx context.Context, cond *UserListCondition) ([]*User, error) {
 	uc.log.WithContext(ctx).Infof("GetUserList: %v", cond)
 	return uc.repo.PageList(ctx, cond)
+}
+
+// CountUser counts the number of users.
+func (uc *UserUsecase) CountUser(ctx context.Context, cond *UserListCondition) (int64, error) {
+	uc.log.WithContext(ctx).Infof("CountUser: %v", cond)
+	return uc.repo.Count(ctx, cond)
+}
+
+// DeleteUser deletes the specified User.
+func (uc *UserUsecase) DeleteUser(ctx context.Context, ids []int64) error {
+	uc.log.WithContext(ctx).Infof("DeleteUser: %v", ids)
+	return uc.repo.Delete(ctx, ids)
 }

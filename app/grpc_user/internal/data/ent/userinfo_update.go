@@ -28,6 +28,26 @@ func (uiu *UserInfoUpdate) Where(ps ...predicate.UserInfo) *UserInfoUpdate {
 	return uiu
 }
 
+// SetDeleteTime sets the "delete_time" field.
+func (uiu *UserInfoUpdate) SetDeleteTime(t time.Time) *UserInfoUpdate {
+	uiu.mutation.SetDeleteTime(t)
+	return uiu
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (uiu *UserInfoUpdate) SetNillableDeleteTime(t *time.Time) *UserInfoUpdate {
+	if t != nil {
+		uiu.SetDeleteTime(*t)
+	}
+	return uiu
+}
+
+// ClearDeleteTime clears the value of the "delete_time" field.
+func (uiu *UserInfoUpdate) ClearDeleteTime() *UserInfoUpdate {
+	uiu.mutation.ClearDeleteTime()
+	return uiu
+}
+
 // SetAccount sets the "account" field.
 func (uiu *UserInfoUpdate) SetAccount(s string) *UserInfoUpdate {
 	uiu.mutation.SetAccount(s)
@@ -84,23 +104,45 @@ func (uiu *UserInfoUpdate) SetNillableAvatar(s *string) *UserInfoUpdate {
 	return uiu
 }
 
-// ClearAvatar clears the value of the "avatar" field.
-func (uiu *UserInfoUpdate) ClearAvatar() *UserInfoUpdate {
-	uiu.mutation.ClearAvatar()
+// SetType sets the "type" field.
+func (uiu *UserInfoUpdate) SetType(i int32) *UserInfoUpdate {
+	uiu.mutation.ResetType()
+	uiu.mutation.SetType(i)
 	return uiu
 }
 
-// SetIsEnable sets the "is_enable" field.
-func (uiu *UserInfoUpdate) SetIsEnable(b bool) *UserInfoUpdate {
-	uiu.mutation.SetIsEnable(b)
-	return uiu
-}
-
-// SetNillableIsEnable sets the "is_enable" field if the given value is not nil.
-func (uiu *UserInfoUpdate) SetNillableIsEnable(b *bool) *UserInfoUpdate {
-	if b != nil {
-		uiu.SetIsEnable(*b)
+// SetNillableType sets the "type" field if the given value is not nil.
+func (uiu *UserInfoUpdate) SetNillableType(i *int32) *UserInfoUpdate {
+	if i != nil {
+		uiu.SetType(*i)
 	}
+	return uiu
+}
+
+// AddType adds i to the "type" field.
+func (uiu *UserInfoUpdate) AddType(i int32) *UserInfoUpdate {
+	uiu.mutation.AddType(i)
+	return uiu
+}
+
+// SetStatusIs sets the "status_is" field.
+func (uiu *UserInfoUpdate) SetStatusIs(i int32) *UserInfoUpdate {
+	uiu.mutation.ResetStatusIs()
+	uiu.mutation.SetStatusIs(i)
+	return uiu
+}
+
+// SetNillableStatusIs sets the "status_is" field if the given value is not nil.
+func (uiu *UserInfoUpdate) SetNillableStatusIs(i *int32) *UserInfoUpdate {
+	if i != nil {
+		uiu.SetStatusIs(*i)
+	}
+	return uiu
+}
+
+// AddStatusIs adds i to the "status_is" field.
+func (uiu *UserInfoUpdate) AddStatusIs(i int32) *UserInfoUpdate {
+	uiu.mutation.AddStatusIs(i)
 	return uiu
 }
 
@@ -193,6 +235,12 @@ func (uiu *UserInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := uiu.mutation.DeleteTime(); ok {
+		_spec.SetField(userinfo.FieldDeleteTime, field.TypeTime, value)
+	}
+	if uiu.mutation.DeleteTimeCleared() {
+		_spec.ClearField(userinfo.FieldDeleteTime, field.TypeTime)
+	}
 	if value, ok := uiu.mutation.Account(); ok {
 		_spec.SetField(userinfo.FieldAccount, field.TypeString, value)
 	}
@@ -205,11 +253,17 @@ func (uiu *UserInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uiu.mutation.Avatar(); ok {
 		_spec.SetField(userinfo.FieldAvatar, field.TypeString, value)
 	}
-	if uiu.mutation.AvatarCleared() {
-		_spec.ClearField(userinfo.FieldAvatar, field.TypeString)
+	if value, ok := uiu.mutation.GetType(); ok {
+		_spec.SetField(userinfo.FieldType, field.TypeInt32, value)
 	}
-	if value, ok := uiu.mutation.IsEnable(); ok {
-		_spec.SetField(userinfo.FieldIsEnable, field.TypeBool, value)
+	if value, ok := uiu.mutation.AddedType(); ok {
+		_spec.AddField(userinfo.FieldType, field.TypeInt32, value)
+	}
+	if value, ok := uiu.mutation.StatusIs(); ok {
+		_spec.SetField(userinfo.FieldStatusIs, field.TypeInt32, value)
+	}
+	if value, ok := uiu.mutation.AddedStatusIs(); ok {
+		_spec.AddField(userinfo.FieldStatusIs, field.TypeInt32, value)
 	}
 	if value, ok := uiu.mutation.CreatedAt(); ok {
 		_spec.SetField(userinfo.FieldCreatedAt, field.TypeTime, value)
@@ -241,6 +295,26 @@ type UserInfoUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *UserInfoMutation
+}
+
+// SetDeleteTime sets the "delete_time" field.
+func (uiuo *UserInfoUpdateOne) SetDeleteTime(t time.Time) *UserInfoUpdateOne {
+	uiuo.mutation.SetDeleteTime(t)
+	return uiuo
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (uiuo *UserInfoUpdateOne) SetNillableDeleteTime(t *time.Time) *UserInfoUpdateOne {
+	if t != nil {
+		uiuo.SetDeleteTime(*t)
+	}
+	return uiuo
+}
+
+// ClearDeleteTime clears the value of the "delete_time" field.
+func (uiuo *UserInfoUpdateOne) ClearDeleteTime() *UserInfoUpdateOne {
+	uiuo.mutation.ClearDeleteTime()
+	return uiuo
 }
 
 // SetAccount sets the "account" field.
@@ -299,23 +373,45 @@ func (uiuo *UserInfoUpdateOne) SetNillableAvatar(s *string) *UserInfoUpdateOne {
 	return uiuo
 }
 
-// ClearAvatar clears the value of the "avatar" field.
-func (uiuo *UserInfoUpdateOne) ClearAvatar() *UserInfoUpdateOne {
-	uiuo.mutation.ClearAvatar()
+// SetType sets the "type" field.
+func (uiuo *UserInfoUpdateOne) SetType(i int32) *UserInfoUpdateOne {
+	uiuo.mutation.ResetType()
+	uiuo.mutation.SetType(i)
 	return uiuo
 }
 
-// SetIsEnable sets the "is_enable" field.
-func (uiuo *UserInfoUpdateOne) SetIsEnable(b bool) *UserInfoUpdateOne {
-	uiuo.mutation.SetIsEnable(b)
-	return uiuo
-}
-
-// SetNillableIsEnable sets the "is_enable" field if the given value is not nil.
-func (uiuo *UserInfoUpdateOne) SetNillableIsEnable(b *bool) *UserInfoUpdateOne {
-	if b != nil {
-		uiuo.SetIsEnable(*b)
+// SetNillableType sets the "type" field if the given value is not nil.
+func (uiuo *UserInfoUpdateOne) SetNillableType(i *int32) *UserInfoUpdateOne {
+	if i != nil {
+		uiuo.SetType(*i)
 	}
+	return uiuo
+}
+
+// AddType adds i to the "type" field.
+func (uiuo *UserInfoUpdateOne) AddType(i int32) *UserInfoUpdateOne {
+	uiuo.mutation.AddType(i)
+	return uiuo
+}
+
+// SetStatusIs sets the "status_is" field.
+func (uiuo *UserInfoUpdateOne) SetStatusIs(i int32) *UserInfoUpdateOne {
+	uiuo.mutation.ResetStatusIs()
+	uiuo.mutation.SetStatusIs(i)
+	return uiuo
+}
+
+// SetNillableStatusIs sets the "status_is" field if the given value is not nil.
+func (uiuo *UserInfoUpdateOne) SetNillableStatusIs(i *int32) *UserInfoUpdateOne {
+	if i != nil {
+		uiuo.SetStatusIs(*i)
+	}
+	return uiuo
+}
+
+// AddStatusIs adds i to the "status_is" field.
+func (uiuo *UserInfoUpdateOne) AddStatusIs(i int32) *UserInfoUpdateOne {
+	uiuo.mutation.AddStatusIs(i)
 	return uiuo
 }
 
@@ -438,6 +534,12 @@ func (uiuo *UserInfoUpdateOne) sqlSave(ctx context.Context) (_node *UserInfo, er
 			}
 		}
 	}
+	if value, ok := uiuo.mutation.DeleteTime(); ok {
+		_spec.SetField(userinfo.FieldDeleteTime, field.TypeTime, value)
+	}
+	if uiuo.mutation.DeleteTimeCleared() {
+		_spec.ClearField(userinfo.FieldDeleteTime, field.TypeTime)
+	}
 	if value, ok := uiuo.mutation.Account(); ok {
 		_spec.SetField(userinfo.FieldAccount, field.TypeString, value)
 	}
@@ -450,11 +552,17 @@ func (uiuo *UserInfoUpdateOne) sqlSave(ctx context.Context) (_node *UserInfo, er
 	if value, ok := uiuo.mutation.Avatar(); ok {
 		_spec.SetField(userinfo.FieldAvatar, field.TypeString, value)
 	}
-	if uiuo.mutation.AvatarCleared() {
-		_spec.ClearField(userinfo.FieldAvatar, field.TypeString)
+	if value, ok := uiuo.mutation.GetType(); ok {
+		_spec.SetField(userinfo.FieldType, field.TypeInt32, value)
 	}
-	if value, ok := uiuo.mutation.IsEnable(); ok {
-		_spec.SetField(userinfo.FieldIsEnable, field.TypeBool, value)
+	if value, ok := uiuo.mutation.AddedType(); ok {
+		_spec.AddField(userinfo.FieldType, field.TypeInt32, value)
+	}
+	if value, ok := uiuo.mutation.StatusIs(); ok {
+		_spec.SetField(userinfo.FieldStatusIs, field.TypeInt32, value)
+	}
+	if value, ok := uiuo.mutation.AddedStatusIs(); ok {
+		_spec.AddField(userinfo.FieldStatusIs, field.TypeInt32, value)
 	}
 	if value, ok := uiuo.mutation.CreatedAt(); ok {
 		_spec.SetField(userinfo.FieldCreatedAt, field.TypeTime, value)
