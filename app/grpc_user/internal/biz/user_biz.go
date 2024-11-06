@@ -5,13 +5,7 @@ import (
 
 	"kratos-project/api/grpc_user"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-)
-
-var (
-	// ErrUserNotFound is user not found.
-	ErrUserNotFound = errors.NotFound(grpc_user.ErrorReason_USER_NOT_FOUND.String(), "user not found")
 )
 
 // UserRepo is a User repo.
@@ -28,8 +22,8 @@ type UserUsecase struct {
 	log  *log.Helper
 }
 
-// NewGreeterUsecase new a Greeter usecase.
-func NewGreeterUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
+// NewUserUsecase new a Greeter usecase.
+func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 	return &UserUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 

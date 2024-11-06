@@ -15,6 +15,20 @@ else
 	API_PROTO_FILES=$(shell find api -name *.proto)
 endif
 
+.PHONY: config
+# generate internal proto
+config:
+	protoc --proto_path=./internal \
+	       --proto_path=../..//third_party \
+ 	       --go_out=paths=source_relative:./internal \
+	       $(INTERNAL_PROTO_FILES)
+
+
+.PHONY: wire
+# generate wire
+wire:
+	wire ./...
+
 .PHONY: entinit
 entinit:
 	cd internal/data/ && go run -mod=mod entgo.io/ent/cmd/ent init
