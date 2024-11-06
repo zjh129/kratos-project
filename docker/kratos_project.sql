@@ -11,7 +11,7 @@
  Target Server Version : 90100 (9.1.0)
  File Encoding         : 65001
 
- Date: 06/11/2024 15:28:12
+ Date: 06/11/2024 17:53:14
 */
 
 SET NAMES utf8mb4;
@@ -45,8 +45,8 @@ CREATE TABLE `user_info`  (
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户密码',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名称',
   `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户头像地址',
-  `type` tinyint(1) NOT NULL COMMENT '用户类别',
-  `status_is` tinyint(1) NOT NULL COMMENT '可用状态(0:禁用,1:启用)',
+  `type` int NOT NULL COMMENT '用户类别',
+  `status_is` int NOT NULL COMMENT '可用状态(0:禁用,1:启用)',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `deleted_at` datetime NULL DEFAULT NULL COMMENT '删除时间',

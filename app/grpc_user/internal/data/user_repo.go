@@ -3,15 +3,15 @@ package data
 import (
 	"context"
 	"fmt"
-	cache "github.com/mgtv-tech/jetcache-go"
-	"kratos-project/api/grpc_user"
-	"kratos-project/app/grpc_user/internal/data/ent"
-	"kratos-project/app/grpc_user/internal/data/ent/userinfo"
 	"time"
 
+	"kratos-project/api/grpc_user"
 	"kratos-project/app/grpc_user/internal/biz"
+	"kratos-project/app/grpc_user/internal/data/ent"
+	"kratos-project/app/grpc_user/internal/data/ent/userinfo"
 
 	"github.com/go-kratos/kratos/v2/log"
+	cache "github.com/mgtv-tech/jetcache-go"
 )
 
 type userRepo struct {
@@ -23,7 +23,7 @@ type userRepo struct {
 func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 	return &userRepo{
 		data: data,
-		log:  log.NewHelper(logger),
+		log:  log.NewHelper(log.With(logger, "module", "repo/user")),
 	}
 }
 
