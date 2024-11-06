@@ -78,11 +78,23 @@ func (u *userRepo) Save(ctx context.Context, req *grpc_user.UserSaveRequest) (*g
 }
 
 func (u *userRepo) Find(ctx context.Context, req *grpc_user.UserInfoRequest) (*grpc_user.UserInfo, error) {
-	cacheKey := u.getCacheKey(req.Id)
+	switch {
+	case req.Id > 0:
+		return u.FindByID(ctx, req.Id)
+	case req.Account != "":
+		return u.FindByAccount(ctx, req.Account)
+	default:
+		return nil, ErrRecordNotFound
+	}
+}
+
+// FindByID 根据ID查找用户
+func (u *userRepo) FindByID(ctx context.Context, id int64) (*grpc_user.UserInfo, error) {
+	cacheKey := u.getCacheKey(id)
 	getu := &ent.UserInfo{}
 	if err := u.data.cache.Once(ctx, cacheKey, cache.Value(getu), cache.TTL(time.Hour), cache.Refresh(true),
 		cache.Do(func(ctx context.Context) (any, error) {
-			get, err := u.data.db.UserInfo.Get(ctx, int(req.Id))
+			get, err := u.data.db.UserInfo.Get(ctx, int(id))
 			if err != nil {
 				if ent.IsNotFound(err) {
 					return nil, ErrRecordNotFound
@@ -96,7 +108,28 @@ func (u *userRepo) Find(ctx context.Context, req *grpc_user.UserInfoRequest) (*g
 	return u.convertUserInfoToBizUser(getu), nil
 }
 
-// 转换UserInfo到biz.User
+// FindByAccount 根据账号查找用户
+func (u *userRepo) FindByAccount(ctx context.Context, account string) (*grpc_user.UserInfo, error) {
+	cacheKey := fmt.Sprintf("kratos_learn:user:account:%s", account)
+	// 从缓存中获取用户ID
+	uid := 0
+	if err := u.data.cache.Once(ctx, cacheKey, cache.Value(&uid), cache.TTL(time.Hour), cache.Refresh(true),
+		cache.Do(func(ctx context.Context) (any, error) {
+			getU, err := u.data.db.UserInfo.Query().Where(userinfo.Account(account)).First(ctx)
+			if err != nil {
+				return nil, err
+			}
+			return getU.ID, nil
+		})); err != nil {
+		return nil, err
+	}
+	if uid == 0 {
+		return nil, ErrRecordNotFound
+	}
+	return u.FindByID(ctx, int64(uid))
+}
+
+// 转换UserInfo到grpc_user.UserInfo
 func (u *userRepo) convertUserInfoToBizUser(user *ent.UserInfo) *grpc_user.UserInfo {
 	return &grpc_user.UserInfo{
 		Id:        int64(user.ID),
