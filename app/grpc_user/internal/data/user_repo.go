@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	cache "github.com/mgtv-tech/jetcache-go"
+	"kratos-project/api/grpc_user"
 	"kratos-project/app/grpc_user/internal/data/ent"
 	"kratos-project/app/grpc_user/internal/data/ent/userinfo"
 	"time"
@@ -30,21 +31,21 @@ func (u *userRepo) getCacheKey(id int64) string {
 	return fmt.Sprintf("kratos_learn:user:%d", id)
 }
 
-func (u *userRepo) Save(ctx context.Context, user *biz.User) (*biz.User, error) {
+func (u *userRepo) Save(ctx context.Context, req *grpc_user.UserSaveRequest) (*grpc_user.UserSaveReply, error) {
 	var err error
 	var get *ent.UserInfo
-	if user.Id > 0 {
-		get, err = u.data.db.UserInfo.Get(ctx, int(user.Id))
+	if req.Id > 0 {
+		get, err = u.data.db.UserInfo.Get(ctx, int(req.Id))
 		if err != nil {
 			return nil, err
 		}
 		ur := get.Update().
-			SetAccount(user.Account).
-			SetPassword(user.Password).
-			SetName(user.Name).
-			SetAvatar(user.Avatar).
-			SetType(int32(user.UserType)).
-			SetStatusIs(int32(user.Status))
+			SetAccount(req.Account).
+			SetPassword(req.Password).
+			SetName(req.Name).
+			SetAvatar(req.Avatar).
+			SetType(int32(req.Type)).
+			SetStatusIs(int32(req.StatusIs))
 		get, err = ur.SetUpdatedAt(time.Now()).
 			Save(ctx)
 		if err != nil {
@@ -52,12 +53,12 @@ func (u *userRepo) Save(ctx context.Context, user *biz.User) (*biz.User, error) 
 		}
 	} else {
 		cr := u.data.db.UserInfo.Create().
-			SetAccount(user.Account).
-			SetPassword(user.Password).
-			SetName(user.Name).
-			SetAvatar(user.Avatar).
-			SetType(int32(user.UserType)).
-			SetStatusIs(int32(user.Status))
+			SetAccount(req.Account).
+			SetPassword(req.Password).
+			SetName(req.Name).
+			SetAvatar(req.Avatar).
+			SetType(int32(req.Type)).
+			SetStatusIs(int32(req.StatusIs))
 		get, err = cr.SetCreatedAt(time.Now()).
 			SetUpdatedAt(time.Now()).
 			Save(ctx)
@@ -71,15 +72,17 @@ func (u *userRepo) Save(ctx context.Context, user *biz.User) (*biz.User, error) 
 	if err != nil {
 		return nil, err
 	}
-	return u.convertUserInfoToBizUser(get), nil
+	return &grpc_user.UserSaveReply{
+		Id: int64(get.ID),
+	}, nil
 }
 
-func (u *userRepo) FindByID(ctx context.Context, i int64) (*biz.User, error) {
-	cacheKey := u.getCacheKey(i)
+func (u *userRepo) Find(ctx context.Context, req *grpc_user.UserInfoRequest) (*grpc_user.UserInfo, error) {
+	cacheKey := u.getCacheKey(req.Id)
 	getu := &ent.UserInfo{}
 	if err := u.data.cache.Once(ctx, cacheKey, cache.Value(getu), cache.TTL(time.Hour), cache.Refresh(true),
 		cache.Do(func(ctx context.Context) (any, error) {
-			get, err := u.data.db.UserInfo.Get(ctx, int(i))
+			get, err := u.data.db.UserInfo.Get(ctx, int(req.Id))
 			if err != nil {
 				if ent.IsNotFound(err) {
 					return nil, ErrRecordNotFound
@@ -94,96 +97,86 @@ func (u *userRepo) FindByID(ctx context.Context, i int64) (*biz.User, error) {
 }
 
 // 转换UserInfo到biz.User
-func (u *userRepo) convertUserInfoToBizUser(user *ent.UserInfo) *biz.User {
-	return &biz.User{
+func (u *userRepo) convertUserInfoToBizUser(user *ent.UserInfo) *grpc_user.UserInfo {
+	return &grpc_user.UserInfo{
 		Id:        int64(user.ID),
 		Account:   user.Account,
 		Password:  user.Password,
 		Name:      user.Name,
 		Avatar:    user.Avatar,
-		UserType:  int(user.Type),
-		Status:    int(user.StatusIs),
+		Type:      grpc_user.UserType(user.Type),
+		StatusIs:  grpc_user.UserStatus(user.StatusIs),
 		CreatedAt: user.CreatedAt.Format(time.DateTime),
 		UpdatedAt: user.UpdatedAt.Format(time.DateTime),
 	}
 }
 
-func (u *userRepo) FindByAccount(ctx context.Context, s string) (*biz.User, error) {
-	cacheKey := fmt.Sprintf("kratos_learn:user:account:%s", s)
-	getu := &ent.UserInfo{}
-	if err := u.data.cache.Once(ctx, cacheKey, cache.Value(getu), cache.TTL(time.Hour), cache.Refresh(true),
-		cache.Do(func(ctx context.Context) (any, error) {
-			get, err := u.data.db.UserInfo.Query().Where(userinfo.Account(s)).First(ctx)
-			if err != nil {
-				if ent.IsNotFound(err) {
-					return nil, ErrRecordNotFound
-				}
-				return nil, err
-			}
-			return get, nil
-		})); err != nil {
+func (u *userRepo) PageList(ctx context.Context, req *grpc_user.UserListRequest) (*grpc_user.UserListReply, error) {
+	// 组装查询条件
+	query := u.data.db.UserInfo.Query()
+	if req != nil {
+		if req.Name != "" {
+			query.Where(userinfo.Name(req.Name))
+		}
+		if req.Type != 0 {
+			query.Where(userinfo.Type(int32(req.Type)))
+		}
+		if req.StatusIs != 0 {
+			query.Where(userinfo.StatusIs(int32(req.StatusIs)))
+		}
+	}
+	count, err := query.Count(ctx)
+	if err != nil {
 		return nil, err
 	}
-	return u.convertUserInfoToBizUser(getu), nil
-}
-
-// 组装查询条件
-func (u *userRepo) getQuery(condition *biz.UserListCondition) *ent.UserInfoQuery {
-	query := u.data.db.UserInfo.Query()
-	if condition != nil {
-		if condition.Name != "" {
-			query.Where(userinfo.Name(condition.Name))
-		}
-		if condition.UserType != 0 {
-			query.Where(userinfo.Type(int32(condition.UserType)))
-		}
-		if condition.Status != 0 {
-			query.Where(userinfo.StatusIs(int32(condition.Status)))
-		}
+	if count == 0 {
+		return &grpc_user.UserListReply{Total: 0}, nil
 	}
-	return query
-}
-
-func (u *userRepo) Count(ctx context.Context, condition *biz.UserListCondition) (int64, error) {
-	count, err := u.getQuery(condition).Count(ctx)
-	if err != nil {
-		return 0, err
-	}
-	return int64(count), nil
-}
-
-func (u *userRepo) PageList(ctx context.Context, condition *biz.UserListCondition) ([]*biz.User, error) {
-	// 组装查询条件
-	query := u.getQuery(condition)
-	if condition.Page > 0 && condition.PageSize > 0 {
-		query.Offset(int((condition.Page - 1) * condition.PageSize)).Limit(int(condition.PageSize))
+	if req.Page > 0 && req.PageSize > 0 {
+		query.Offset(int((req.Page - 1) * req.PageSize)).Limit(int(req.PageSize))
 	}
 	users, err := query.All(ctx)
 	if err != nil {
 		return nil, err
 	}
-	var result []*biz.User
+	var result []*grpc_user.UserInfo
 	for _, user := range users {
 		result = append(result, u.convertUserInfoToBizUser(user))
 	}
-	return result, nil
+	return &grpc_user.UserListReply{
+		List:  result,
+		Total: int64(count),
+	}, nil
 }
 
-func (u *userRepo) Delete(ctx context.Context, ids []int64) error {
-	idsInt := make([]int, 0, len(ids))
-	for _, id := range ids {
-		idsInt = append(idsInt, int(id))
+func (u *userRepo) Delete(ctx context.Context, req *grpc_user.UserDeleteRequest) (*grpc_user.UserDeleteReply, error) {
+	// 转换被删除的id类型为int
+	idsInt := make([]int, 0)
+	if req.Id > 0 {
+		idsInt = append(idsInt, int(req.Id))
+	}
+	if req.Ids != nil {
+		for _, id := range req.Ids {
+			idsInt = append(idsInt, int(id))
+		}
 	}
 	_, err := u.data.db.UserInfo.Delete().Where(userinfo.IDIn(idsInt...)).Exec(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	for _, id := range ids {
-		cacheKey := u.getCacheKey(id)
+	for _, id := range idsInt {
+		cacheKey := u.getCacheKey(int64(id))
 		err = u.data.cache.Delete(ctx, cacheKey)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	// 转换被删除的id类型为int64
+	idsInt64 := make([]int64, 0)
+	for _, id := range idsInt {
+		idsInt64 = append(idsInt64, int64(id))
+	}
+	return &grpc_user.UserDeleteReply{
+		Ids: idsInt64,
+	}, nil
 }
