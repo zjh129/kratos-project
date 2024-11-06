@@ -31,10 +31,9 @@ var ErrRecordNotFound = errors.New("record not found")
 
 // Data .
 type Data struct {
-	db       *ent.Client
-	cache    cache.Cache
-	log      *log.Helper
-	userRepo *userRepo
+	db    *ent.Client
+	cache cache.Cache
+	log   *log.Helper
 }
 
 // NewData .
@@ -43,14 +42,12 @@ func NewData(
 	logger log.Logger,
 	entClient *ent.Client,
 	jetCache cache.Cache,
-	userRepo *userRepo,
 ) (*Data, func(), error) {
 	log := log.NewHelper(log.With(logger, "module", "kratos-learn/data"))
 	d := &Data{
-		db:       entClient,
-		cache:    jetCache,
-		log:      log,
-		userRepo: userRepo,
+		db:    entClient,
+		cache: jetCache,
+		log:   log,
 	}
 	cleanup := func() {
 		if err := d.db.Close(); err != nil {
