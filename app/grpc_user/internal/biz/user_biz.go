@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"errors"
 
 	"kratos-project/api/grpc_user"
 
@@ -11,7 +12,8 @@ import (
 // UserRepo is a User repo.
 type UserRepo interface {
 	Save(context.Context, *grpc_user.UserSaveRequest) (*grpc_user.UserSaveReply, error)
-	Find(context.Context, *grpc_user.UserInfoRequest) (*grpc_user.UserInfo, error)
+	FindById(context.Context, int64) (*grpc_user.UserInfo, error)
+	FindByAccount(context.Context, string) (*grpc_user.UserInfo, error)
 	PageList(context.Context, *grpc_user.UserListRequest) (*grpc_user.UserListReply, error)
 	Delete(context.Context, *grpc_user.UserDeleteRequest) (*grpc_user.UserDeleteReply, error)
 }
@@ -36,7 +38,14 @@ func (uc *UserUsecase) SaveUser(ctx context.Context, u *grpc_user.UserSaveReques
 // GetUser gets the specified User.
 func (uc *UserUsecase) GetUser(ctx context.Context, req *grpc_user.UserInfoRequest) (*grpc_user.UserInfo, error) {
 	uc.log.WithContext(ctx).Infof("GetUser: %+v", req)
-	return uc.repo.Find(ctx, req)
+	switch {
+	case req.Id > 0:
+		return uc.repo.FindById(ctx, req.Id)
+	case req.Account != "":
+		return uc.repo.FindByAccount(ctx, req.Account)
+	default:
+		return nil, errors.New("invalid request")
+	}
 }
 
 // GetUserList gets the specified User list.

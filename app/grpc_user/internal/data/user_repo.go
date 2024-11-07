@@ -77,19 +77,8 @@ func (u *userRepo) Save(ctx context.Context, req *grpc_user.UserSaveRequest) (*g
 	}, nil
 }
 
-func (u *userRepo) Find(ctx context.Context, req *grpc_user.UserInfoRequest) (*grpc_user.UserInfo, error) {
-	switch {
-	case req.Id > 0:
-		return u.FindByID(ctx, req.Id)
-	case req.Account != "":
-		return u.FindByAccount(ctx, req.Account)
-	default:
-		return nil, ErrRecordNotFound
-	}
-}
-
 // FindByID 根据ID查找用户
-func (u *userRepo) FindByID(ctx context.Context, id int64) (*grpc_user.UserInfo, error) {
+func (u *userRepo) FindById(ctx context.Context, id int64) (*grpc_user.UserInfo, error) {
 	cacheKey := u.getCacheKey(id)
 	getu := &ent.UserInfo{}
 	if err := u.data.cache.Once(ctx, cacheKey, cache.Value(getu), cache.TTL(time.Hour), cache.Refresh(true),
@@ -126,7 +115,7 @@ func (u *userRepo) FindByAccount(ctx context.Context, account string) (*grpc_use
 	if uid == 0 {
 		return nil, ErrRecordNotFound
 	}
-	return u.FindByID(ctx, int64(uid))
+	return u.FindById(ctx, int64(uid))
 }
 
 // 转换UserInfo到grpc_user.UserInfo
