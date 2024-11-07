@@ -14,8 +14,10 @@ type UserRepo interface {
 	Save(context.Context, *grpc_user.UserSaveRequest) (*grpc_user.UserSaveReply, error)
 	FindById(context.Context, int64) (*grpc_user.UserInfo, error)
 	FindByAccount(context.Context, string) (*grpc_user.UserInfo, error)
-	PageList(context.Context, *grpc_user.UserListRequest) (*grpc_user.UserListReply, error)
-	Delete(context.Context, *grpc_user.UserDeleteRequest) (*grpc_user.UserDeleteReply, error)
+	Count(context.Context, *grpc_user.UserListRequest) (int64, error)
+	PageList(context.Context, *grpc_user.UserListRequest) ([]*grpc_user.UserInfo, error)
+	DeleteById(context.Context, int64) error
+	DeleteByIds(context.Context, []int64) error
 }
 
 // UserUsecase is a User usecase.
@@ -51,11 +53,34 @@ func (uc *UserUsecase) GetUser(ctx context.Context, req *grpc_user.UserInfoReque
 // GetUserList gets the specified User list.
 func (uc *UserUsecase) GetUserList(ctx context.Context, req *grpc_user.UserListRequest) (*grpc_user.UserListReply, error) {
 	uc.log.WithContext(ctx).Infof("GetUserList: %+v", req)
-	return uc.repo.PageList(ctx, req)
+	count, err := uc.repo.Count(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	list, err := uc.repo.PageList(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return &grpc_user.UserListReply{Total: count, List: list}, nil
 }
 
 // DeleteUser deletes the specified User.
 func (uc *UserUsecase) DeleteUser(ctx context.Context, req *grpc_user.UserDeleteRequest) (*grpc_user.UserDeleteReply, error) {
 	uc.log.WithContext(ctx).Infof("DeleteUser: %+v", req)
-	return uc.repo.Delete(ctx, req)
+	switch {
+	case req.Id > 0:
+		err := uc.repo.DeleteById(ctx, req.Id)
+		if err != nil {
+			return nil, err
+		}
+		return &grpc_user.UserDeleteReply{Ids: []int64{req.Id}}, nil
+	case len(req.Ids) > 0:
+		err := uc.repo.DeleteByIds(ctx, req.Ids)
+		if err != nil {
+			return nil, err
+		}
+		return &grpc_user.UserDeleteReply{Ids: req.Ids}, nil
+	default:
+		return nil, errors.New("invalid request")
+	}
 }

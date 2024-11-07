@@ -133,8 +133,8 @@ func (u *userRepo) convertUserInfoToBizUser(user *ent.UserInfo) *grpc_user.UserI
 	}
 }
 
-func (u *userRepo) PageList(ctx context.Context, req *grpc_user.UserListRequest) (*grpc_user.UserListReply, error) {
-	// 组装查询条件
+// getQuery 根据查询条件获取查询对象
+func (u *userRepo) getQuery(req *grpc_user.UserListRequest) *ent.UserInfoQuery {
 	query := u.data.db.UserInfo.Query()
 	if req != nil {
 		if req.Name != "" {
@@ -147,13 +147,20 @@ func (u *userRepo) PageList(ctx context.Context, req *grpc_user.UserListRequest)
 			query.Where(userinfo.StatusIs(int32(req.StatusIs)))
 		}
 	}
-	count, err := query.Count(ctx)
+	return query
+}
+
+func (u *userRepo) Count(ctx context.Context, req *grpc_user.UserListRequest) (int64, error) {
+	count, err := u.getQuery(req).Count(ctx)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	if count == 0 {
-		return &grpc_user.UserListReply{Total: 0}, nil
-	}
+	return int64(count), nil
+}
+
+func (u *userRepo) PageList(ctx context.Context, req *grpc_user.UserListRequest) ([]*grpc_user.UserInfo, error) {
+	// 组装查询条件
+	query := u.getQuery(req)
 	if req.Page > 0 && req.PageSize > 0 {
 		query.Offset(int((req.Page - 1) * req.PageSize)).Limit(int(req.PageSize))
 	}
@@ -165,40 +172,37 @@ func (u *userRepo) PageList(ctx context.Context, req *grpc_user.UserListRequest)
 	for _, user := range users {
 		result = append(result, u.convertUserInfoToBizUser(user))
 	}
-	return &grpc_user.UserListReply{
-		List:  result,
-		Total: int64(count),
-	}, nil
+	return result, nil
 }
 
-func (u *userRepo) Delete(ctx context.Context, req *grpc_user.UserDeleteRequest) (*grpc_user.UserDeleteReply, error) {
-	// 转换被删除的id类型为int
-	idsInt := make([]int, 0)
-	if req.Id > 0 {
-		idsInt = append(idsInt, int(req.Id))
-	}
-	if req.Ids != nil {
-		for _, id := range req.Ids {
-			idsInt = append(idsInt, int(id))
-		}
+func (u *userRepo) DeleteByIds(ctx context.Context, ids []int64) error {
+	idsInt := make([]int, 0, len(ids))
+	for _, id := range ids {
+		idsInt = append(idsInt, int(id))
 	}
 	_, err := u.data.db.UserInfo.Delete().Where(userinfo.IDIn(idsInt...)).Exec(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	for _, id := range idsInt {
-		cacheKey := u.getCacheKey(int64(id))
+	for _, id := range ids {
+		cacheKey := u.getCacheKey(id)
 		err = u.data.cache.Delete(ctx, cacheKey)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
-	// 转换被删除的id类型为int64
-	idsInt64 := make([]int64, 0)
-	for _, id := range idsInt {
-		idsInt64 = append(idsInt64, int64(id))
+	return nil
+}
+
+func (u *userRepo) DeleteById(ctx context.Context, id int64) error {
+	err := u.data.db.UserInfo.DeleteOneID(int(id)).Exec(ctx)
+	if err != nil {
+		return err
 	}
-	return &grpc_user.UserDeleteReply{
-		Ids: idsInt64,
-	}, nil
+	cacheKey := u.getCacheKey(int64(id))
+	err = u.data.cache.Delete(ctx, cacheKey)
+	if err != nil {
+		return err
+	}
+	return nil
 }
