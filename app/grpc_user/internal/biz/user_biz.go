@@ -3,10 +3,8 @@ package biz
 import (
 	"context"
 	"errors"
-
-	"kratos-project/api/grpc_user"
-
 	"github.com/go-kratos/kratos/v2/log"
+	"kratos-project/api/grpc_user"
 )
 
 // UserRepo is a User repo.
@@ -34,6 +32,18 @@ func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 // SaveUser creates a User, and returns the new Greeter.
 func (uc *UserUsecase) SaveUser(ctx context.Context, u *grpc_user.UserSaveRequest) (*grpc_user.UserSaveReply, error) {
 	uc.log.WithContext(ctx).Infof("CreateUser: %v", u.Account)
+	// 验证account是否存在
+	if u.Id == 0 {
+		findU, _ := uc.repo.FindByAccount(ctx, u.Account)
+		if findU != nil {
+			return nil, errors.New("account already exists")
+		}
+	} else {
+		findU, _ := uc.repo.FindById(ctx, u.Id)
+		if findU != nil && findU.Id != u.Id {
+			return nil, errors.New("account already exists")
+		}
+	}
 	return uc.repo.Save(ctx, u)
 }
 

@@ -106,6 +106,9 @@ func (u *userRepo) FindByAccount(ctx context.Context, account string) (*grpc_use
 		cache.Do(func(ctx context.Context) (any, error) {
 			getU, err := u.data.db.UserInfo.Query().Where(userinfo.Account(account)).First(ctx)
 			if err != nil {
+				if ent.IsNotFound(err) {
+					return nil, ErrRecordNotFound
+				}
 				return nil, err
 			}
 			return getU.ID, nil

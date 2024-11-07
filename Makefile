@@ -94,7 +94,7 @@ run:
 docker:
 	cd docker && \
  	docker-compose rm && \
- 	docker-compose up -d
+ 	docker-compose -p "kratos-project-service" up -d
 
 .PHONY: wire
 # generate wire

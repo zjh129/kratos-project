@@ -40,3 +40,14 @@ services:
       - REDIS_PASSWORD=123456
       - REDIS_PORT=6379
       - REDIS_DATABASES=16
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger_server
+    restart: always
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      - LOG_LEVEL=debug
+      - JAEGER_AGENT_MAX_PACKET_SIZE=65000

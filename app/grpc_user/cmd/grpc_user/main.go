@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/go-kratos/kratos/v2/registry"
 	"os"
@@ -56,6 +57,13 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
+
+	ctx := context.Background()
+	err := setTracerProvider(ctx)
+	if err != nil {
+		log.Error(err)
+	}
+
 	// init config
 	c := initConfig()
 	defer c.Close()
