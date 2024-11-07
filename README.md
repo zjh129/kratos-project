@@ -27,52 +27,11 @@ kratos new app/cron/ --nomod
 kratos new app/mq_consume/ --nomod
 ```
 
-## 安装环境
-```
-make init
-```
-## Create a service
-```
-# Create a template project
-kratos new server
-
-cd server
-# Add a proto template
-kratos proto add api/server/server.proto
-# Generate the proto code
-kratos proto client api/server/server.proto
-# Generate the source code of service by proto file
-kratos proto server api/server/server.proto -t internal/service
-
-go generate ./...
-go build -o ./bin/ ./...
-./bin/server -conf ./configs
-```
-## Generate other auxiliary files by Makefile
-```
-# Download and update dependencies
-make init
-# Generate API files (include: pb.go, http, grpc, validate, swagger) by proto file
-make api
-# Generate all files
-make all
-```
-
-## Automated Initialization (wire)
-```
-# install wire
-go get github.com/google/wire/cmd/wire
-
-# generate wire
-cd cmd/server
-wire
-```
-
-## Docker
+## 运行系统配套服务
 ```bash
-# build
-docker build -t <your-docker-image-name> .
-
-# run
-docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
+make docker
 ```
+
+## 软件UI管理界面
+- [Consul服务注册/服务发现/配置中心管理界面](http://127.0.0.1:8500/)
+- [Jaeger链路追踪管理界面](http://127.0.0.1:16686/)
