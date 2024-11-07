@@ -14,7 +14,10 @@ import (
 // set trace provider
 func setTracerProvider(ctx context.Context) error {
 	// Create the Jaeger exporter
-	exp, err := otlptracegrpc.New(ctx, otlptracegrpc.WithEndpoint("127.0.0.1:4317"), otlptracegrpc.WithInsecure())
+	var point string
+	//jaeger
+	point = "127.0.0.1:4317"
+	exp, err := otlptracegrpc.New(ctx, otlptracegrpc.WithEndpoint(point), otlptracegrpc.WithInsecure())
 	if err != nil {
 		return err
 	}
