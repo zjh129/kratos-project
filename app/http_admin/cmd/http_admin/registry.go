@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"kratos-project/app/grpc_user/internal/conf"
+	"kratos-project/app/http_admin/internal/conf"
 
 	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -13,7 +13,7 @@ import (
 )
 
 // initRegistry init the registry
-func initRegistry() registry.Registrar {
+func initRegistry() registry.Registry {
 	dirverC := config.New(
 		config.WithSource(
 			file.NewSource(fmt.Sprintf("%s/registry.yaml", flagconf)),

@@ -1,4 +1,4 @@
 type: "consul"
 consul:
   address: 127.0.0.1:8500
-  path: kratos_learn/configs
+  path: kratos_project/http_app/configs
