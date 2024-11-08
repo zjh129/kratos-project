@@ -78,10 +78,11 @@ func main() {
 	}
 
 	// init registry
-	reg := initRegistry()
+	rConf := initRegistryConf()
+	rr := initRegistry(rConf)
 
 	// init app
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger, reg)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, logger, rr)
 	if err != nil {
 		panic(err)
 	}

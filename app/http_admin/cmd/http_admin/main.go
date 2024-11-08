@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"os"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/http"
 
 	_ "go.uber.org/automaxprocs"
@@ -30,7 +32,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, hs *http.Server) *kratos.App {
+func newApp(logger log.Logger, hs *http.Server, rr registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -40,6 +42,7 @@ func newApp(logger log.Logger, hs *http.Server) *kratos.App {
 		kratos.Server(
 			hs,
 		),
+		kratos.Registrar(rr),
 	)
 }
 
@@ -54,6 +57,13 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
+	// 注册链路追踪
+	ctx := context.Background()
+	err := setTracerProvider(ctx)
+	if err != nil {
+		log.Error(err)
+	}
+
 	// init config
 	c := initConfig()
 	defer c.Close()
@@ -67,7 +77,11 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	// init registry
+	rConf := initRegistryConf()
+	rr := initRegistry(rConf)
+
+	app, cleanup, err := wireApp(bc.Server, bc.Data, rConf, logger, rr)
 	if err != nil {
 		panic(err)
 	}

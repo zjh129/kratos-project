@@ -29,6 +29,11 @@ config:
 wire:
 	wire ./...
 
+.PHONY: run
+# run
+run:
+	kratos run
+
 .PHONY: entinit
 entinit:
 	cd internal/data/ && go run -mod=mod entgo.io/ent/cmd/ent init

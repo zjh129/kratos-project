@@ -29,6 +29,11 @@ config:
 wire:
 	wire ./...
 
+.PHONY: run
+# run
+run:
+	kratos run
+
 # show help
 help:
 	@echo ''
