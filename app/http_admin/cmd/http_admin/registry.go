@@ -2,17 +2,16 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-kratos/kratos/v2/registry"
 	"kratos-project/app/http_admin/internal/conf"
 
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
-	"github.com/go-kratos/kratos/v2/registry"
-
 	"github.com/hashicorp/consul/api"
 )
 
-// initRegistry init the registry
+// initRegistryConf init the registry config
 func initRegistryConf() *conf.Registry {
 	registry := config.New(
 		config.WithSource(

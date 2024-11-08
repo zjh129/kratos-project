@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 
 	"kratos-project/app/http_admin/internal/conf"
@@ -21,11 +22,13 @@ var (
 	// Name is the name of the compiled software.
 	Name string = "kratos-project.http_admin"
 	// Version is the version of the compiled software.
-	Version string
+	Version string = "v0.0.1"
 	// flagconf is the config flag.
 	flagconf string
-
-	id, _ = os.Hostname()
+	// host name
+	hostname, _ = os.Hostname()
+	// id
+	id = fmt.Sprintf("%s/%s", hostname, Name)
 )
 
 func init() {
