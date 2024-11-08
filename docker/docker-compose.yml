@@ -3,7 +3,8 @@ services:
     image: hashicorp/consul
     restart: always
     container_name: consul_server
-    network_mode: bridge
+    networks:
+      - local_net
     volumes:
       - /data/consul:/tmp/consul
     ports:
@@ -34,7 +35,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - /data/redis/dаta:/root/redis
+      - /data/redis/data:/root/redis
       - /data/redis/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_PASSWORD=123456
@@ -51,3 +52,10 @@ services:
     environment:
       - LOG_LEVEL=debug
       - JAEGER_AGENT_MAX_PACKET_SIZE=65000
+
+networks:
+  local_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
