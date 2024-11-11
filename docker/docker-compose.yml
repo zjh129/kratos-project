@@ -19,6 +19,7 @@ services:
     command: consul agent -data-dir=/tmp/consul -dev -client=0.0.0.0
   db:
     image: mysql:latest
+    restart: always
     container_name: mysql_server
     ports:
       - "3306:3306"
