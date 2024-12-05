@@ -3,32 +3,27 @@ syntax = "proto3";
 package http_app;
 
 import "google/api/annotations.proto";
+import "validate/validate.proto";
 
 option go_package = "kratos-project/api/http_app;http_app";
 
 service User {
 	rpc UserLogin (UserLoginRequest) returns (UserLoginReply) {
 		option (google.api.http) = {
-			post: "/login"
-			body: "*"
-		};
-	};
-	rpc UserLogout (UserLogoutRequest) returns (UserLogoutReply) {
-		option (google.api.http) = {
-			post: "/logout"
+			post: "/app/login"
 			body: "*"
 		};
 	};
 	rpc UserInfo (UserInfoRequest) returns (UserInfoReply) {
 		option (google.api.http) = {
-			get: "/user"
+			get: "/app/user"
 		};
 	};
 }
 
 message UserLoginRequest {
-	string account = 1;
-	string password = 2;
+	string account = 1 [(validate.rules).string = {min_len: 1; max_len: 20}];
+	string password = 2 [(validate.rules).string = {min_len: 1}];
 }
 
 message UserLoginReply {
@@ -36,13 +31,13 @@ message UserLoginReply {
 }
 
 message UserLogoutRequest {
-	string token = 1;
+
 }
 
 message UserLogoutReply {}
 
 message UserInfoRequest {
-	string token = 1;
+
 }
 
 message UserInfoReply {

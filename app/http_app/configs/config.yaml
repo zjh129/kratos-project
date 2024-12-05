@@ -14,5 +14,7 @@ data:
     read_timeout: 0.2s
     write_timeout: 0.2s
 auth:
-  secret: "kratos-http-admin"
+  secret: "kratos-http-app"
   expire: 3600s
+trace:
+  endpoint: 127.0.0.1:4317

@@ -6,7 +6,7 @@ info:
     title: User API
     version: 0.0.1
 paths:
-    /login:
+    /app/login:
         post:
             tags:
                 - User
@@ -24,34 +24,11 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/http_app.UserLoginReply'
-    /logout:
-        post:
-            tags:
-                - User
-            operationId: User_UserLogout
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/http_app.UserLogoutRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/http_app.UserLogoutReply'
-    /user:
+    /app/user:
         get:
             tags:
                 - User
             operationId: User_UserInfo
-            parameters:
-                - name: token
-                  in: query
-                  schema:
-                    type: string
             responses:
                 "200":
                     description: OK
@@ -83,14 +60,6 @@ components:
                 account:
                     type: string
                 password:
-                    type: string
-        http_app.UserLogoutReply:
-            type: object
-            properties: {}
-        http_app.UserLogoutRequest:
-            type: object
-            properties:
-                token:
                     type: string
 tags:
     - name: User

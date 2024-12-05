@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.8.2
 // - protoc             v5.29.1
-// source: user.proto
+// source: http_app_user.proto
 
 package http_app
 
@@ -21,19 +21,16 @@ const _ = http.SupportPackageIsVersion1
 
 const OperationUserUserInfo = "/http_app.User/UserInfo"
 const OperationUserUserLogin = "/http_app.User/UserLogin"
-const OperationUserUserLogout = "/http_app.User/UserLogout"
 
 type UserHTTPServer interface {
 	UserInfo(context.Context, *UserInfoRequest) (*UserInfoReply, error)
 	UserLogin(context.Context, *UserLoginRequest) (*UserLoginReply, error)
-	UserLogout(context.Context, *UserLogoutRequest) (*UserLogoutReply, error)
 }
 
 func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r := s.Route("/")
-	r.POST("/login", _User_UserLogin0_HTTP_Handler(srv))
-	r.POST("/logout", _User_UserLogout0_HTTP_Handler(srv))
-	r.GET("/user", _User_UserInfo0_HTTP_Handler(srv))
+	r.POST("/app/login", _User_UserLogin0_HTTP_Handler(srv))
+	r.GET("/app/user", _User_UserInfo0_HTTP_Handler(srv))
 }
 
 func _User_UserLogin0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -54,28 +51,6 @@ func _User_UserLogin0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) er
 			return err
 		}
 		reply := out.(*UserLoginReply)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _User_UserLogout0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in UserLogoutRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationUserUserLogout)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.UserLogout(ctx, req.(*UserLogoutRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*UserLogoutReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -102,7 +77,6 @@ func _User_UserInfo0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) err
 type UserHTTPClient interface {
 	UserInfo(ctx context.Context, req *UserInfoRequest, opts ...http.CallOption) (rsp *UserInfoReply, err error)
 	UserLogin(ctx context.Context, req *UserLoginRequest, opts ...http.CallOption) (rsp *UserLoginReply, err error)
-	UserLogout(ctx context.Context, req *UserLogoutRequest, opts ...http.CallOption) (rsp *UserLogoutReply, err error)
 }
 
 type UserHTTPClientImpl struct {
@@ -115,7 +89,7 @@ func NewUserHTTPClient(client *http.Client) UserHTTPClient {
 
 func (c *UserHTTPClientImpl) UserInfo(ctx context.Context, in *UserInfoRequest, opts ...http.CallOption) (*UserInfoReply, error) {
 	var out UserInfoReply
-	pattern := "/user"
+	pattern := "/app/user"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserUserInfo))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -128,22 +102,9 @@ func (c *UserHTTPClientImpl) UserInfo(ctx context.Context, in *UserInfoRequest, 
 
 func (c *UserHTTPClientImpl) UserLogin(ctx context.Context, in *UserLoginRequest, opts ...http.CallOption) (*UserLoginReply, error) {
 	var out UserLoginReply
-	pattern := "/login"
+	pattern := "/app/login"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserUserLogin))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-func (c *UserHTTPClientImpl) UserLogout(ctx context.Context, in *UserLogoutRequest, opts ...http.CallOption) (*UserLogoutReply, error) {
-	var out UserLogoutReply
-	pattern := "/logout"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationUserUserLogout))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

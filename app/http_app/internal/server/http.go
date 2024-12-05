@@ -1,9 +1,18 @@
 package server
 
 import (
-	v1 "kratos-project/api/helloworld/v1"
+	"context"
+	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
+	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
+	"github.com/go-kratos/kratos/v2/middleware/selector"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/go-kratos/kratos/v2/middleware/validate"
+	jwtv5 "github.com/golang-jwt/jwt/v5"
+	"kratos-project/api/http_app"
 	"kratos-project/app/http_app/internal/conf"
 	"kratos-project/app/http_app/internal/service"
+	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -11,10 +20,31 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, authC *conf.Auth, appUser *service.AppUserSrv, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
+			// 异常恢复
 			recovery.Recovery(),
+			// 默认 bbr limiter
+			ratelimit.Server(),
+			// 日志
+			logging.Server(logger),
+			// 参数验证
+			validate.Validator(),
+			// 链路追踪
+			tracing.Server(),
+			// jwt 验证
+			selector.Server(
+				jwt.Server(func(token *jwtv5.Token) (interface{}, error) {
+					return []byte(authC.Secret), nil
+				}),
+			).Match(func(ctx context.Context, operation string) bool {
+				// 登录接口不需要验证jwt
+				if strings.HasPrefix(operation, "/http_app.User/UserLogin") {
+					return false
+				}
+				return true
+			}).Build(),
 		),
 	}
 	if c.Http.Network != "" {
@@ -27,6 +57,6 @@ func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterGreeterHTTPServer(srv, greeter)
+	http_app.RegisterUserHTTPServer(srv, appUser)
 	return srv
 }
