@@ -60,12 +60,6 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
-	// 注册链路追踪
-	ctx := context.Background()
-	err := setTracerProvider(ctx)
-	if err != nil {
-		log.Error(err)
-	}
 
 	// init config
 	c := initConfig()
@@ -78,6 +72,13 @@ func main() {
 	var bc conf.Bootstrap
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
+	}
+
+	// 注册链路追踪
+	ctx := context.Background()
+	err := setTracerProvider(ctx, bc.Trace)
+	if err != nil {
+		log.Error(err)
 	}
 
 	// init registry

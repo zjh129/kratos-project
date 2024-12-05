@@ -9,6 +9,7 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   Auth auth = 3; // Add auth config
+  Trace trace = 4;
 }
 
 message Server {
@@ -44,4 +45,8 @@ message Data {
 message Auth {
   string secret = 1;
   google.protobuf.Duration expire = 2;
+}
+
+message Trace {
+  string endpoint = 1;
 }

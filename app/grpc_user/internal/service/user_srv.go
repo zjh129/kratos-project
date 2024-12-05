@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"kratos-project/api/grpc_user"
 
+	"kratos-project/api/grpc_user"
 	"kratos-project/app/grpc_user/internal/biz"
 )
 

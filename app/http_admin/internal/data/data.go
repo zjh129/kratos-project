@@ -2,13 +2,15 @@ package data
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/middleware/recovery"
-	"github.com/go-kratos/kratos/v2/registry"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"kratos-project/api/grpc_user"
 	"kratos-project/app/http_admin/internal/conf"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware/circuitbreaker"
+	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
+
 	"github.com/google/wire"
 )
 
@@ -44,6 +46,8 @@ func NewUserRpcClient(r registry.Discovery) grpc_user.UserClient {
 		grpc.WithDiscovery(r),
 		grpc.WithMiddleware(
 			recovery.Recovery(),
+			//熔断器
+			circuitbreaker.Client(),
 		),
 	)
 	if err != nil {

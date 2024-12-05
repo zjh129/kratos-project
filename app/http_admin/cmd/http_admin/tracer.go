@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"kratos-project/app/http_admin/internal/conf"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -12,12 +13,8 @@ import (
 )
 
 // set trace provider
-func setTracerProvider(ctx context.Context) error {
-	// Create the Jaeger exporter
-	var point string
-	//jaeger
-	point = "127.0.0.1:4317"
-	exp, err := otlptracegrpc.New(ctx, otlptracegrpc.WithEndpoint(point), otlptracegrpc.WithInsecure())
+func setTracerProvider(ctx context.Context, c *conf.Trace) error {
+	exp, err := otlptracegrpc.New(ctx, otlptracegrpc.WithEndpoint(c.Endpoint), otlptracegrpc.WithInsecure())
 	if err != nil {
 		return err
 	}

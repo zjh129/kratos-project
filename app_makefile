@@ -19,6 +19,7 @@ init:
 	go install entgo.io/ent/cmd/ent@latest
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
 	go install github.com/go-kratos/kratos/cmd/protoc-gen-go-errors/v2@latest
+	go install github.com/envoyproxy/protoc-gen-validate@latest
 
 .PHONY: config
 # generate internal proto
@@ -35,6 +36,7 @@ grpc:
            --proto_path=../../third_party \
            --go_out=paths=source_relative:. \
            --go-grpc_out=paths=source_relative:. \
+           --validate_out=paths=source_relative,lang=go:. \
            $(API_PROTO_FILES)
 
 .PHONY: http
@@ -44,6 +46,7 @@ http:
             --proto_path=../../third_party \
             --go_out=paths=source_relative:. \
             --go-http_out=paths=source_relative:. \
+            --validate_out=paths=source_relative,lang=go:. \
             --openapi_out=fq_schema_naming=true,default_response=false,naming=proto:. \
             $(API_PROTO_FILES)
 
