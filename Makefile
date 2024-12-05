@@ -93,8 +93,8 @@ run:
 # soft
 docker:
 	cd docker && \
- 	docker-compose rm && \
- 	docker-compose -p "kratos-project-service" up -d
+ 	docker compose rm && \
+ 	docker compose -p "kratos-project-service" up -d
 
 .PHONY: wire
 # generate wire

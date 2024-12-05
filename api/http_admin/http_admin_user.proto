@@ -11,41 +11,41 @@ option java_package = "api.http_admin";
 service User {
 	rpc UserLogin (UserLoginRequest) returns (UserLoginReply) {
 		option (google.api.http) = {
-			post: "/login"
+			post: "/admin/user/login"
 			body: "*"
 		};
 	};
 	rpc UserLogout (UserLogoutRequest) returns (UserLogoutReply) {
 		option (google.api.http) = {
-			post: "/logout"
+			post: "/admin/user/logout"
 			body: "*"
 		};
 	};
 	rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
 		option (google.api.http) = {
-			post: "/user"
+			post: "/admin/user/user"
 			body: "*"
 		};
 	};
 	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply) {
 		option (google.api.http) = {
-			put: "/user"
+			put: "/admin/user/user"
 			body: "*"
 		};
 	};
 	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
 		option (google.api.http) = {
-			delete: "/user/{id}"
+			delete: "/admin/user/user/{id}"
 		};
 	};
 	rpc ListUser (ListUserRequest) returns (ListUserReply) {
 		option (google.api.http) = {
-			get: "/users"
+			get: "/admin/user/users"
 		};
 	};
 	rpc FindUser (FindUserRequest) returns (FindUserReply) {
 		option (google.api.http) = {
-			get: "/user/{id}"
+			get: "/admin/user/user/{id}"
 		};
 	};
 }

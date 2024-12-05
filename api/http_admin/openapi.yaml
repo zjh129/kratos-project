@@ -1,0 +1,241 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: User API
+    version: 0.0.1
+paths:
+    /admin/user/login:
+        post:
+            tags:
+                - User
+            operationId: User_UserLogin
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http_admin.UserLoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_admin.UserLoginReply'
+    /admin/user/logout:
+        post:
+            tags:
+                - User
+            operationId: User_UserLogout
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http_admin.UserLogoutRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_admin.UserLogoutReply'
+    /admin/user/user:
+        put:
+            tags:
+                - User
+            operationId: User_UpdateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http_admin.UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_admin.UpdateUserReply'
+        post:
+            tags:
+                - User
+            operationId: User_CreateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http_admin.CreateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_admin.CreateUserReply'
+    /admin/user/user/{id}:
+        get:
+            tags:
+                - User
+            operationId: User_FindUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_admin.FindUserReply'
+        delete:
+            tags:
+                - User
+            operationId: User_DeleteUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_admin.DeleteUserReply'
+    /admin/user/users:
+        get:
+            tags:
+                - User
+            operationId: User_ListUser
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: string
+                - name: page_size
+                  in: query
+                  schema:
+                    type: string
+                - name: name
+                  in: query
+                  schema:
+                    type: string
+                - name: user_type
+                  in: query
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_admin.ListUserReply'
+components:
+    schemas:
+        http_admin.CreateUserReply:
+            type: object
+            properties:
+                id:
+                    type: string
+        http_admin.CreateUserRequest:
+            type: object
+            properties:
+                account:
+                    type: string
+                password:
+                    type: string
+                name:
+                    type: string
+                avatar:
+                    type: string
+                is_enable:
+                    type: boolean
+        http_admin.DeleteUserReply:
+            type: object
+            properties: {}
+        http_admin.FindUserReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/http_admin.UserInfo'
+        http_admin.ListUserReply:
+            type: object
+            properties:
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/http_admin.UserInfo'
+                count:
+                    type: string
+        http_admin.UpdateUserReply:
+            type: object
+            properties: {}
+        http_admin.UpdateUserRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                account:
+                    type: string
+                password:
+                    type: string
+                name:
+                    type: string
+                avatar:
+                    type: string
+                is_enable:
+                    type: boolean
+        http_admin.UserInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                account:
+                    type: string
+                name:
+                    type: string
+                avatar:
+                    type: string
+                is_enable:
+                    type: boolean
+                created_at:
+                    type: string
+                updated_at:
+                    type: string
+        http_admin.UserLoginReply:
+            type: object
+            properties:
+                token:
+                    type: string
+        http_admin.UserLoginRequest:
+            type: object
+            properties:
+                account:
+                    type: string
+                password:
+                    type: string
+        http_admin.UserLogoutReply:
+            type: object
+            properties: {}
+        http_admin.UserLogoutRequest:
+            type: object
+            properties:
+                token:
+                    type: string
+tags:
+    - name: User

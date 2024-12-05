@@ -4,9 +4,13 @@ import (
 	"context"
 	"kratos-project/api/grpc_user"
 	"kratos-project/api/http_admin"
+	"kratos-project/app/http_admin/internal/conf"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
+	jwtv5 "github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 var (
@@ -32,13 +36,21 @@ type UserRepo interface {
 
 // UserUsecase is a User usecase.
 type UserUsecase struct {
-	repo UserRepo
-	log  *log.Helper
+	repo     UserRepo
+	authConf *conf.Auth
+	log      *log.Helper
+}
+
+// UserClaims user claims.
+type UserClaims struct {
+	jwtv5.RegisteredClaims
+	UserID  int64  `json:"user_id"`
+	Account string `json:"account"`
 }
 
 // NewUserUsecase new a User usecase.
-func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
-	return &UserUsecase{repo: repo, log: log.NewHelper(logger)}
+func NewUserUsecase(repo UserRepo, authConf *conf.Auth, logger log.Logger) *UserUsecase {
+	return &UserUsecase{repo: repo, authConf: authConf, log: log.NewHelper(logger)}
 }
 
 // CreateUser create a new user.
@@ -93,10 +105,39 @@ func (uc *UserUsecase) UpdateUser(ctx context.Context, req *http_admin.UpdateUse
 
 // UserLogin user login.
 func (uc *UserUsecase) UserLogin(ctx context.Context, req *http_admin.UserLoginRequest) (*http_admin.UserLoginReply, error) {
-	panic("implement me")
+	uc.log.WithContext(ctx).Infof("UserLogin: %+v", req)
+	accountInfo, err := uc.repo.FindByAccount(ctx, req.Account)
+	if err != nil {
+		return nil, http_admin.ErrorUserNotFound("用户不存在")
+	}
+	if accountInfo.Passwd != req.Password {
+		return nil, http_admin.ErrorUserLoginFailed("账号或密码错误")
+	}
+	// generate token
+	claims := jwtv5.NewWithClaims(jwtv5.SigningMethodHS256, UserClaims{
+		RegisteredClaims: jwtv5.RegisteredClaims{
+			ExpiresAt: jwtv5.NewNumericDate(time.Now().Add(uc.authConf.Expire.AsDuration())),
+			IssuedAt:  jwtv5.NewNumericDate(time.Now()),
+			NotBefore: jwtv5.NewNumericDate(time.Now()),
+			Issuer:    "http-admin",
+			Subject:   "kratos-project http-admin",
+			ID:        uuid.NewString(),
+			Audience:  []string{"http-admin api"},
+		},
+		UserID:  accountInfo.Id,
+		Account: accountInfo.Account,
+	})
+	signedString, err := claims.SignedString([]byte(uc.authConf.Secret))
+	if err != nil {
+		return nil, http_admin.ErrorUserLoginFailed("生成token失败: %s", err.Error())
+	}
+	return &http_admin.UserLoginReply{
+		Token: signedString,
+	}, nil
 }
 
 // UserLogout user logout.
 func (uc *UserUsecase) UserLogout(ctx context.Context, req *http_admin.UserLogoutRequest) (*http_admin.UserLogoutReply, error) {
-	panic("implement me")
+	uc.log.WithContext(ctx).Infof("UserLogout: %+v", req)
+	return &http_admin.UserLogoutReply{}, nil
 }

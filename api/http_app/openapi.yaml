@@ -1,0 +1,96 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: User API
+    version: 0.0.1
+paths:
+    /login:
+        post:
+            tags:
+                - User
+            operationId: User_UserLogin
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http_app.UserLoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_app.UserLoginReply'
+    /logout:
+        post:
+            tags:
+                - User
+            operationId: User_UserLogout
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http_app.UserLogoutRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_app.UserLogoutReply'
+    /user:
+        get:
+            tags:
+                - User
+            operationId: User_UserInfo
+            parameters:
+                - name: token
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http_app.UserInfoReply'
+components:
+    schemas:
+        http_app.UserInfoReply:
+            type: object
+            properties:
+                id:
+                    type: string
+                account:
+                    type: string
+                name:
+                    type: string
+                avatar:
+                    type: string
+        http_app.UserLoginReply:
+            type: object
+            properties:
+                token:
+                    type: string
+        http_app.UserLoginRequest:
+            type: object
+            properties:
+                account:
+                    type: string
+                password:
+                    type: string
+        http_app.UserLogoutReply:
+            type: object
+            properties: {}
+        http_app.UserLogoutRequest:
+            type: object
+            properties:
+                token:
+                    type: string
+tags:
+    - name: User
