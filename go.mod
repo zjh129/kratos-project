@@ -18,6 +18,7 @@ require (
 	github.com/mgtv-tech/jetcache-go v1.2.0
 	github.com/redis/go-redis/v9 v9.7.0
 	go.opentelemetry.io/otel v1.31.0
+	go.opentelemetry.io/otel/exporters/jaeger v1.17.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.31.0
 	go.opentelemetry.io/otel/sdk v1.31.0
 	go.uber.org/automaxprocs v1.5.1

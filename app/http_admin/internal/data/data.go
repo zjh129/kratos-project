@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"kratos-project/api/grpc_user"
 	"kratos-project/app/http_admin/internal/conf"
 
@@ -45,9 +46,12 @@ func NewUserRpcClient(r registry.Discovery) grpc_user.UserClient {
 		grpc.WithEndpoint("discovery:///kratos-project.grpc_user"),
 		grpc.WithDiscovery(r),
 		grpc.WithMiddleware(
+			// 异常恢复
 			recovery.Recovery(),
 			//熔断器
 			circuitbreaker.Client(),
+			//链路追踪
+			tracing.Client(),
 		),
 	)
 	if err != nil {
