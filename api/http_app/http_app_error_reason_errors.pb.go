@@ -46,3 +46,15 @@ func IsUserNotFound(err error) bool {
 func ErrorUserNotFound(format string, args ...interface{}) *errors.Error {
 	return errors.New(404, ErrorReason_USER_NOT_FOUND.String(), fmt.Sprintf(format, args...))
 }
+
+func IsUserUnauthorized(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_USER_UNAUTHORIZED.String() && e.Code == 403
+}
+
+func ErrorUserUnauthorized(format string, args ...interface{}) *errors.Error {
+	return errors.New(403, ErrorReason_USER_UNAUTHORIZED.String(), fmt.Sprintf(format, args...))
+}

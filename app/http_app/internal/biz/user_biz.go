@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"kratos-project/api/http_app"
 	"time"
 
@@ -16,11 +17,14 @@ type UserAccountInfo struct {
 	Id      int64  // 用户ID
 	Account string // 用户账号
 	Passwd  string // 用户密码
+	Name    string // 用户名称
+	Avatar  string // 用户头像
 }
 
 // UserRepo is a Greater repo.
 type UserRepo interface {
 	FindByAccount(context.Context, string) (*UserAccountInfo, error)
+	FindByID(context.Context, int64) (*UserAccountInfo, error)
 }
 
 // UserUsecase is a User usecase.
@@ -77,5 +81,23 @@ func (uc *UserUsecase) UserLogin(ctx context.Context, req *http_app.UserLoginReq
 
 // UserLogout user logout.
 func (uc *UserUsecase) UserInfo(ctx context.Context) (*http_app.UserInfoReply, error) {
-	return &http_app.UserInfoReply{}, nil
+	token, ok := jwt.FromContext(ctx)
+	if !ok {
+		return nil, http_app.ErrorUserUnauthorized("用户未登录")
+	}
+	claims := &UserClaims{}
+	_, err := jwtv5.ParseWithClaims("token", claims, func(token *jwtv5.Token) (interface{}, error) {
+		return []byte(uc.authConf.Secret), nil
+	})
+
+	info, err := uc.repo.FindByID(ctx, 1)
+	if err != nil {
+		return nil, http_app.ErrorUserNotFound("用户不存在")
+	}
+	return &http_app.UserInfoReply{
+		Id:      info.Id,
+		Account: info.Account,
+		Name:    info.Name,
+		Avatar:  info.Avatar,
+	}, nil
 }
