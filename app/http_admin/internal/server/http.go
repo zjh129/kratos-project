@@ -58,6 +58,11 @@ func NewHTTPServer(c *conf.Server, authC *conf.Auth, user_http *service.UserServ
 	if c.Http.Timeout != nil {
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
+	// 请求响应封装
+	opts = append(opts, http.ResponseEncoder(EncoderResponse()))
+	// 错误响应封装`
+	opts = append(opts, http.ErrorEncoder(EncoderError()))
+
 	srv := http.NewServer(opts...)
 	http_admin.RegisterUserHTTPServer(srv, user_http)
 	return srv

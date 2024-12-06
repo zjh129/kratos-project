@@ -2,21 +2,23 @@ package server
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
-	"github.com/go-kratos/kratos/v2/middleware/logging"
-	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
-	"github.com/go-kratos/kratos/v2/middleware/selector"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
-	"github.com/go-kratos/kratos/v2/middleware/validate"
-	jwtv5 "github.com/golang-jwt/jwt/v5"
+	"strings"
+
 	"kratos-project/api/http_app"
 	"kratos-project/app/http_app/internal/conf"
 	"kratos-project/app/http_app/internal/service"
-	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
+	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/selector"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
+
+	jwtv5 "github.com/golang-jwt/jwt/v5"
 )
 
 // NewHTTPServer new an HTTP server.
@@ -56,6 +58,11 @@ func NewHTTPServer(c *conf.Server, authC *conf.Auth, appUser *service.AppUserSrv
 	if c.Http.Timeout != nil {
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
+	// 请求响应封装
+	opts = append(opts, http.ResponseEncoder(EncoderResponse()))
+	// 错误响应封装`
+	opts = append(opts, http.ErrorEncoder(EncoderError()))
+
 	srv := http.NewServer(opts...)
 	http_app.RegisterUserHTTPServer(srv, appUser)
 	return srv
