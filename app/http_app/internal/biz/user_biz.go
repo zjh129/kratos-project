@@ -85,12 +85,17 @@ func (uc *UserUsecase) UserInfo(ctx context.Context) (*http_app.UserInfoReply, e
 	if !ok {
 		return nil, http_app.ErrorUserUnauthorized("用户未登录")
 	}
-	claims := &UserClaims{}
-	_, err := jwtv5.ParseWithClaims("token", claims, func(token *jwtv5.Token) (interface{}, error) {
-		return []byte(uc.authConf.Secret), nil
-	})
+	var id int64
+	if customerClaims, ok := token.(*UserClaims); ok {
+		id = customerClaims.UserID
+	} else {
+		return nil, http_app.ErrorUserUnauthorized("用户未登录")
+	}
+	if id == 0 {
+		return nil, http_app.ErrorUserUnauthorized("用户未登录")
+	}
 
-	info, err := uc.repo.FindByID(ctx, 1)
+	info, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, http_app.ErrorUserNotFound("用户不存在")
 	}
