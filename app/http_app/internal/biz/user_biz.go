@@ -86,8 +86,11 @@ func (uc *UserUsecase) UserInfo(ctx context.Context) (*http_app.UserInfoReply, e
 		return nil, http_app.ErrorUserUnauthorized("用户未登录")
 	}
 	var id int64
-	if customerClaims, ok := token.(*UserClaims); ok {
-		id = customerClaims.UserID
+
+	if customerClaims, ok := token.(jwtv5.MapClaims); ok {
+		if userID, ok := customerClaims["user_id"]; ok {
+			id = int64(userID.(float64))
+		}
 	} else {
 		return nil, http_app.ErrorUserUnauthorized("用户未登录")
 	}
