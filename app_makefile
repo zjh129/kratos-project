@@ -106,7 +106,7 @@ docker:
 .PHONY: wire
 # generate wire
 wire:
-	cd cmd/$(APP_RELATIVE_PATH) && wire
+	cd cmd/$(APP_RELATIVE_PATH) && wire check
 
 .PHONY: api
 # generate api proto
