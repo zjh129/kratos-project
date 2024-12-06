@@ -34,7 +34,7 @@ func (d *DemoService) GetSpec() string {
 
 func (d *DemoService) GetFunc() func() {
 	return func() {
-		fmt.Printf("当前时间 %v \n", time.Now().Unix())
+		fmt.Printf("当前时间 %v \n", time.Now().Format(time.DateTime))
 		total, err := d.uc.Count(context.Background())
 		if err != nil {
 			d.log.Errorf("获取用户总数失败: %v", err)
