@@ -10,12 +10,12 @@ type CronService struct {
 	jobList []JobInterface
 }
 
-func NewJobService(demoSrc *DemoService) *CronService {
+func NewJobService(userCountSrc *UserCountService) *CronService {
 	job := &CronService{
 		jobList: make([]JobInterface, 0),
 	}
 	// 添加示例任务
-	job.AddJob(demoSrc)
+	job.AddJob(userCountSrc)
 	return job
 }
 

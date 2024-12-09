@@ -8,15 +8,15 @@ import (
 	"time"
 )
 
-type DemoService struct {
+type UserCountService struct {
 	name string
 	spec string
 	log  *log.Helper
 	uc   *biz.UserUseCase
 }
 
-func NewUserCountService(logger log.Logger, uc *biz.UserUseCase) *DemoService {
-	return &DemoService{
+func NewUserCountService(logger log.Logger, uc *biz.UserUseCase) *UserCountService {
+	return &UserCountService{
 		name: "用户总数统计计划任务",
 		spec: "*/1 * * * *",
 		log:  log.NewHelper(log.With(logger, "module", "service")),
@@ -24,15 +24,15 @@ func NewUserCountService(logger log.Logger, uc *biz.UserUseCase) *DemoService {
 	}
 }
 
-func (d *DemoService) GetName() string {
+func (d *UserCountService) GetName() string {
 	return d.name
 }
 
-func (d *DemoService) GetSpec() string {
+func (d *UserCountService) GetSpec() string {
 	return d.spec
 }
 
-func (d *DemoService) GetFunc() func() {
+func (d *UserCountService) GetFunc() func() {
 	return func() {
 		fmt.Printf("当前时间 %v \n", time.Now().Format(time.DateTime))
 		total, err := d.uc.Count(context.Background())
