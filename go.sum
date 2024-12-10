@@ -315,6 +315,8 @@ github.com/tx7do/kratos-transport v1.1.12 h1:fVWdL2kZeBNNSfxLDgaGxMSKyY3g4SnERMG
 github.com/tx7do/kratos-transport v1.1.12/go.mod h1:4Qjq9MtwVyN7ITbDtZ5LUHUSxvEd0BjuxxlVv8R9wXo=
 github.com/tx7do/kratos-transport/broker/rabbitmq v1.2.17 h1:z3ucKcHPW2PjfZNla2l+HN7rzWO0oyAq3tEOgr6FLmU=
 github.com/tx7do/kratos-transport/broker/rabbitmq v1.2.17/go.mod h1:g0A/WOUVrF0Ds5V59Yv8ffOMMi+kA2fixe4Kua29DG8=
+github.com/tx7do/kratos-transport/transport/rabbitmq v1.2.18 h1:/mupJCBUMeT2RDEeQC7162gSZJ8P2jm5EcPPHYZsj7s=
+github.com/tx7do/kratos-transport/transport/rabbitmq v1.2.18/go.mod h1:VngcNkSiempcQbaV4HUyzozi7Xukd28wRxAzfEbV5WI=
 github.com/vmihailenco/msgpack/v4 v4.3.12/go.mod h1:gborTTJjAo/GWTqqRjrLCn9pgNN+NXzzngzBKDPIqw4=
 github.com/vmihailenco/msgpack/v5 v5.4.1 h1:cQriyiUvjTwOHg8QZaPihLWeRAAVoCpE00IUPn0Bjt8=
 github.com/vmihailenco/msgpack/v5 v5.4.1/go.mod h1:GaZTsDaehaPpQVyxrf5mtQlH+pc21PIudVV/E3rRQok=

@@ -24,8 +24,8 @@ var ProviderSet = wire.NewSet(
 
 // Data .
 type Data struct {
-	log       *log.Helper
-	gu_client grpc_user.UserClient
+	log      *log.Helper
+	guClient grpc_user.UserClient
 }
 
 // NewData .
@@ -35,8 +35,8 @@ func NewData(c *conf.Data, logger log.Logger, uc grpc_user.UserClient) (*Data, f
 		l.Info("closing the data resources")
 	}
 	return &Data{
-		log:       l,
-		gu_client: uc,
+		log:      l,
+		guClient: uc,
 	}, cleanup, nil
 }
 

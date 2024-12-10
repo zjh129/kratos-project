@@ -4,19 +4,12 @@ import (
 	"context"
 	"time"
 
-	"kratos-project/api/grpc_user"
 	"kratos-project/api/http_admin"
 	"kratos-project/app/http_admin/internal/conf"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	jwtv5 "github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-)
-
-var (
-	// ErrUserNotFound is user not found.
-	ErrUserNotFound = errors.NotFound(grpc_user.ErrorReason_USER_NOT_FOUND.String(), "user not found")
 )
 
 type UserAccountInfo struct {

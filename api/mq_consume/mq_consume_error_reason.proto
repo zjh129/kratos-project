@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package http_app;
+
+import "errors/errors.proto";
+
+option go_package = "kratos-project/api/mq_consume;mq_consume";
+
+enum ErrorReason {
+  // 设置缺省错误码
+  option (errors.default_code) = 500;
+
+  UNSPECIFIED = 0;
+
+  USER_ACCOUNT_MISSING = 1 [(errors.code) = 400];
+}

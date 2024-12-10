@@ -2,14 +2,15 @@ syntax = "proto3";
 
 package mq_consume;
 
-import "google/api/annotations.proto";
+//import "google/api/annotations.proto";
 
 option go_package = "kratos-project/api/mq_consume;mq_consume";
 
 // The user service definition.
 message MqUserInfo {
-  string account = 1; // 用户账号
-  string password = 2; // 用户密码
+  int64 id = 1; // 用户ID
+  string account = 2; // 用户账号
+  string password = 3; // 用户密码
   string name = 4; // 用户名称
   string avatar = 5; // 用户头像地址
 }

@@ -37,7 +37,7 @@ func (r *userRpcRepo) Create(ctx context.Context, req *http_admin.CreateUserRequ
 	} else {
 		saveData.StatusIs = grpc_user.UserStatus_USER_STATUS_DISABLE
 	}
-	rs, err := r.data.gu_client.UserSave(ctx, saveData)
+	rs, err := r.data.guClient.UserSave(ctx, saveData)
 	if err != nil {
 		return 0, err
 	}
@@ -60,7 +60,7 @@ func (r *userRpcRepo) Update(ctx context.Context, req *http_admin.UpdateUserRequ
 	} else {
 		saveData.StatusIs = grpc_user.UserStatus_USER_STATUS_DISABLE
 	}
-	_, err := r.data.gu_client.UserSave(ctx, saveData)
+	_, err := r.data.guClient.UserSave(ctx, saveData)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (r *userRpcRepo) Update(ctx context.Context, req *http_admin.UpdateUserRequ
 
 // FindByID . Find a user by id.
 func (r *userRpcRepo) FindByID(ctx context.Context, id int64) (*http_admin.UserInfo, error) {
-	find, err := r.data.gu_client.UserFind(ctx, &grpc_user.UserInfoRequest{Id: id})
+	find, err := r.data.guClient.UserFind(ctx, &grpc_user.UserInfoRequest{Id: id})
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (r *userRpcRepo) convertUserInfo(u *grpc_user.UserInfo) *http_admin.UserInf
 
 // FindByAccount . Find a user by account.
 func (r *userRpcRepo) FindByAccount(ctx context.Context, account string) (*biz.UserAccountInfo, error) {
-	find, err := r.data.gu_client.UserFind(ctx, &grpc_user.UserInfoRequest{Account: account})
+	find, err := r.data.guClient.UserFind(ctx, &grpc_user.UserInfoRequest{Account: account})
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (r *userRpcRepo) ListByPage(ctx context.Context, req *http_admin.ListUserRe
 		Type:     0,
 		StatusIs: 0,
 	}
-	pbResp, err := r.data.gu_client.UserList(ctx, pbReq)
+	pbResp, err := r.data.guClient.UserList(ctx, pbReq)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (r *userRpcRepo) ListByPage(ctx context.Context, req *http_admin.ListUserRe
 
 // Delete . Delete a user.
 func (r *userRpcRepo) Delete(ctx context.Context, id int64) error {
-	_, err := r.data.gu_client.UserDelete(ctx, &grpc_user.UserDeleteRequest{Id: id})
+	_, err := r.data.guClient.UserDelete(ctx, &grpc_user.UserDeleteRequest{Id: id})
 	if err != nil {
 		return err
 	}

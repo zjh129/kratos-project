@@ -20,6 +20,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/tx7do/kratos-transport v1.1.12
 	github.com/tx7do/kratos-transport/broker/rabbitmq v1.2.17
+	github.com/tx7do/kratos-transport/transport/rabbitmq v1.2.18
 	go.opentelemetry.io/otel v1.32.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.32.0
 	go.opentelemetry.io/otel/sdk v1.32.0
