@@ -9,27 +9,19 @@ import (
 )
 
 type UserCountService struct {
-	name string
-	spec string
-	log  *log.Helper
-	uc   *biz.UserUseCase
+	JobCommonService
+	uc *biz.UserUseCase
 }
 
 func NewUserCountService(logger log.Logger, uc *biz.UserUseCase) *UserCountService {
 	return &UserCountService{
-		name: "用户总数统计计划任务",
-		spec: "*/1 * * * *",
-		log:  log.NewHelper(log.With(logger, "module", "service")),
-		uc:   uc,
+		JobCommonService: JobCommonService{
+			name: "用户总数统计计划任务",
+			spec: "*/1 * * * *",
+			log:  log.NewHelper(log.With(logger, "module", "service")),
+		},
+		uc: uc,
 	}
-}
-
-func (d *UserCountService) GetName() string {
-	return d.name
-}
-
-func (d *UserCountService) GetSpec() string {
-	return d.spec
 }
 
 func (d *UserCountService) GetFunc() func() {

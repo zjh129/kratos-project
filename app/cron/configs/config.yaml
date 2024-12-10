@@ -13,5 +13,10 @@ data:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+  rabbitmq:
+    addrs:
+      - amqp://root:root@127.0.0.1:5672/
+    codec: json
+    exchange: kratos
 trace:
   endpoint: 127.0.0.1:4317

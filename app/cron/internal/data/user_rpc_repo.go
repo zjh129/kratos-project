@@ -22,7 +22,7 @@ func NewUserRpcRepo(data *Data, logger log.Logger) biz.UserRepo {
 
 // ListByPage . List users by page.
 func (u *userRpcRepo) ListByPage(ctx context.Context, page int64, pageSize int64) ([]*biz.UserAccountInfo, error) {
-	userList, err := u.data.gu_client.UserList(ctx, &grpc_user.UserListRequest{
+	userList, err := u.data.guClient.UserList(ctx, &grpc_user.UserListRequest{
 		Page:     page,
 		PageSize: pageSize,
 	})
@@ -42,7 +42,7 @@ func (u *userRpcRepo) ListByPage(ctx context.Context, page int64, pageSize int64
 
 // Count . Count users.
 func (u *userRpcRepo) Count(ctx context.Context) (int64, error) {
-	rpcResp, err := u.data.gu_client.UserList(ctx, &grpc_user.UserListRequest{})
+	rpcResp, err := u.data.guClient.UserList(ctx, &grpc_user.UserListRequest{})
 	if err != nil {
 		return 0, err
 	}

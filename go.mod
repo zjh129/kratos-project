@@ -17,13 +17,15 @@ require (
 	github.com/hashicorp/consul/api v1.30.0
 	github.com/mgtv-tech/jetcache-go v1.2.0
 	github.com/redis/go-redis/v9 v9.7.0
-	go.opentelemetry.io/otel v1.31.0
-	go.opentelemetry.io/otel/exporters/jaeger v1.17.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.31.0
-	go.opentelemetry.io/otel/sdk v1.31.0
+	github.com/robfig/cron/v3 v3.0.1
+	github.com/tx7do/kratos-transport v1.1.12
+	github.com/tx7do/kratos-transport/broker/rabbitmq v1.2.17
+	go.opentelemetry.io/otel v1.32.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.32.0
+	go.opentelemetry.io/otel/sdk v1.32.0
 	go.uber.org/automaxprocs v1.5.1
-	google.golang.org/genproto/googleapis/api v0.0.0-20241007155032-5fefd90f89a9
-	google.golang.org/grpc v1.67.1
+	google.golang.org/genproto/googleapis/api v0.0.0-20241104194629-dd2ea8efbc28
+	google.golang.org/grpc v1.68.0
 	google.golang.org/protobuf v1.35.1
 )
 
@@ -49,7 +51,7 @@ require (
 	github.com/go-playground/form/v4 v4.2.1 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.22.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.23.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
@@ -66,9 +68,10 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/openzipkin/zipkin-go v0.4.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20221212215047-62379fc7944b // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
+	github.com/rabbitmq/amqp091-go v1.10.0 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/shirou/gopsutil/v3 v3.23.6 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
@@ -78,16 +81,19 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.31.0 // indirect
-	go.opentelemetry.io/otel/metric v1.31.0 // indirect
-	go.opentelemetry.io/otel/trace v1.31.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.32.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.32.0 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.32.0 // indirect
+	go.opentelemetry.io/otel/exporters/zipkin v1.32.0 // indirect
+	go.opentelemetry.io/otel/metric v1.32.0 // indirect
+	go.opentelemetry.io/otel/trace v1.32.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/net v0.30.0 // indirect
+	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/sync v0.9.0 // indirect
 	golang.org/x/sys v0.27.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241104194629-dd2ea8efbc28 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

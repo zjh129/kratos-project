@@ -62,10 +62,10 @@ errors:
 .PHONY: proto
 # generate internal proto struct
 proto:
-	protoc --proto_path=. \
-           --proto_path=../../../third_party \
+	cd ../../api/$(APP_RELATIVE_PATH) && protoc --proto_path=. \
+           --proto_path=../../third_party \
            --go_out=paths=source_relative:. \
-           $(INTERNAL_PROTO_FILES)
+           $(API_PROTO_FILES)
 
 .PHONY: generate
 # generate client code

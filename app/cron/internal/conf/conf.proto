@@ -39,8 +39,15 @@ message Data {
   }
   Database database = 1;
   Redis redis = 2;
+  RabbitMQ rabbitmq = 3;
 }
 
 message Trace {
   string endpoint = 1;
+}
+
+message RabbitMQ {
+  repeated string addrs = 1;  // 对端网络地址
+  string codec = 2;  // 编解码器
+  string exchange = 3;  // 交换机
 }

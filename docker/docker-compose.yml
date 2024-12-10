@@ -49,6 +49,18 @@ services:
     environment:
       - LOG_LEVEL=debug
       - JAEGER_AGENT_MAX_PACKET_SIZE=65000
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq_server
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=root
+    volumes:
+      - /data/rabbitmq:/var/lib/rabbitmq
 
 networks:
   local_net:

@@ -41,8 +41,10 @@ make docker
 ## 软件UI管理界面
 - [Consul服务注册/服务发现/配置中心管理界面](http://127.0.0.1:8500/)
 - [Jaeger链路追踪管理界面](http://127.0.0.1:16686/)
+- [RabbitMq管理界面](http://127.0.0.1:15672/)
 
 ## 参考项目
 - [Kratos Example](https://github.com/go-kratos/examples)
 - [beer-shop](https://github.com/go-kratos/beer-shop)
 - [Kratos-Cron](https://github.com/igo9go/kratos-cron)
+- [kratos-transport](https://github.com/tx7do/kratos-transport)

@@ -25,16 +25,17 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, confRegistry *conf.Registry, logger log.Logger, registrar registry.Registrar) (*kratos.App, func(), error) {
+	broker := data.NewRabbitMQBroker(confData)
 	discovery := data.NewDiscovery(confRegistry)
 	userClient := data.NewUserRpcClient(discovery)
-	dataData, cleanup, err := data.NewData(confData, logger, userClient)
+	dataData, cleanup, err := data.NewData(confData, logger, broker, userClient)
 	if err != nil {
 		return nil, nil, err
 	}
 	userRepo := data.NewUserRpcRepo(dataData, logger)
 	userUseCase := biz.NewUserUseCase(userRepo, logger)
-	demoService := service.NewUserCountService(logger, userUseCase)
-	cronService := service.NewJobService(demoService)
+	userCountService := service.NewUserCountService(logger, userUseCase)
+	cronService := service.NewJobService(userCountService)
 	cronServer := server.NewCronServer(cronService, logger)
 	app := newApp(logger, cronServer)
 	return app, func() {
