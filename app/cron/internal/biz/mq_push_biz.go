@@ -6,9 +6,10 @@ import (
 )
 
 type MqPushRepo interface {
-	AddUser(info *mq_consume.MqUserInfo) error
+	PushUserInfo(info *mq_consume.MqUserInfo) error
 }
 
+// MqPushUseCase .
 type MqPushUseCase struct {
 	repo MqPushRepo
 	log  *log.Helper
@@ -19,5 +20,5 @@ func NewMqPushUseCase(repo MqPushRepo, logger log.Logger) *MqPushUseCase {
 }
 
 func (u *MqPushUseCase) AddUser(info *mq_consume.MqUserInfo) error {
-	return u.repo.AddUser(info)
+	return u.repo.PushUserInfo(info)
 }

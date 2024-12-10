@@ -35,7 +35,10 @@ func wireApp(confServer *conf.Server, confData *conf.Data, confRegistry *conf.Re
 	userRepo := data.NewUserRpcRepo(dataData, logger)
 	userUseCase := biz.NewUserUseCase(userRepo, logger)
 	userCountService := service.NewUserCountService(logger, userUseCase)
-	cronService := service.NewJobService(userCountService)
+	mqPushRepo := data.NewMqPushRepo(dataData, logger)
+	mqPushUseCase := biz.NewMqPushUseCase(mqPushRepo, logger)
+	rabbitmqPushService := service.NewRabbitmqPushService(logger, mqPushUseCase)
+	cronService := service.NewJobService(userCountService, rabbitmqPushService)
 	cronServer := server.NewCronServer(cronService, logger)
 	app := newApp(logger, cronServer)
 	return app, func() {
