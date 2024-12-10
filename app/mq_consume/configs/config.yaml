@@ -18,5 +18,6 @@ data:
       - amqp://root:root@127.0.0.1:5672/
     codec: json
     exchange: kratos
+    durable_exchange: true
 trace:
   endpoint: 127.0.0.1:4317

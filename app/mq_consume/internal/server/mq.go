@@ -2,11 +2,13 @@ package server
 
 import (
 	"context"
-	"kratos-project/app/mq_consume/internal/service"
+	"github.com/tx7do/kratos-transport/broker"
 
 	"kratos-project/app/mq_consume/internal/conf"
+	"kratos-project/app/mq_consume/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
+
 	"github.com/tx7do/kratos-transport/transport/rabbitmq"
 )
 
@@ -30,5 +32,5 @@ func NewRabbitMQServer(cfg *conf.Data, _ log.Logger, svc *service.UserService) *
 // registerRabbitMQSubscribers 注册订阅者
 func registerRabbitMQSubscribers(ctx context.Context, srv *rabbitmq.Server, svc *service.UserService) {
 	// 注册订阅者
-	_ = rabbitmq.RegisterSubscriber(srv, ctx, "user", svc.SaveUser)
+	_ = rabbitmq.RegisterSubscriber(srv, ctx, "user", svc.SaveUser, broker.WithQueueName("user"))
 }

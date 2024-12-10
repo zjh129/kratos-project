@@ -2,9 +2,11 @@ package data
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/log"
+
 	"kratos-project/api/mq_consume"
 	"kratos-project/app/cron/internal/biz"
+
+	"github.com/go-kratos/kratos/v2/log"
 )
 
 type mqPushRepo struct {
