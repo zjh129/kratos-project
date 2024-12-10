@@ -17,7 +17,8 @@ data:
     addrs:
       - amqp://root:root@127.0.0.1:5672/
     codec: json
-    exchange: kratos
+    exchange: kratos-exchange
     durable_exchange: true
+    routing: kratos-routing
 trace:
   endpoint: 127.0.0.1:4317

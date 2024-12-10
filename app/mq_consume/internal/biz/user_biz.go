@@ -29,10 +29,7 @@ func (uc *UserUsecase) SaveUser(ctx context.Context, msg *mq_consume.MqUserInfo)
 	if msg.Account == "" {
 		return mq_consume.ErrorUserAccountMissing("account is missing")
 	}
-	find, err := uc.repo.FindByAccount(ctx, msg.Account)
-	if err != nil {
-		return err
-	}
+	find, _ := uc.repo.FindByAccount(ctx, msg.Account)
 	if find != nil {
 		msg.Id = find.Id
 		return uc.repo.Update(ctx, msg)

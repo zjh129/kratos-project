@@ -71,9 +71,9 @@ func (r *userRpcRepo) convertUserInfo(u *grpc_user.UserInfo) *mq_consume.MqUserI
 
 // FindByAccount . Find a user by account.
 func (r *userRpcRepo) FindByAccount(ctx context.Context, account string) (*mq_consume.MqUserInfo, error) {
-	find, err := r.data.guClient.UserFind(ctx, &grpc_user.UserInfoRequest{Account: account})
-	if err != nil {
-		return nil, err
+	find, _ := r.data.guClient.UserFind(ctx, &grpc_user.UserInfoRequest{Account: account})
+	if find == nil {
+		return nil, nil
 	}
 	return r.convertUserInfo(find), nil
 }

@@ -50,4 +50,5 @@ message RabbitMQ {
   repeated string addrs = 1;  // 对端网络地址
   string codec = 2;  // 编解码器
   string exchange = 3;  // 交换机
+  string routing = 4;  // 路由
 }

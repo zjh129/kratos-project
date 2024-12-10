@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"kratos-project/app/cron/internal/conf"
 
 	"kratos-project/api/mq_consume"
 	"kratos-project/app/cron/internal/biz"
@@ -11,16 +12,17 @@ import (
 
 type mqPushRepo struct {
 	data *Data
+	c    *conf.Data
 	log  *log.Helper
 }
 
 // NewMqPushRepo . Create a new mq push repo.
-func NewMqPushRepo(data *Data, logger log.Logger) biz.MqPushRepo {
-	return &mqPushRepo{data: data, log: log.NewHelper(logger)}
+func NewMqPushRepo(data *Data, cfg *conf.Data, logger log.Logger) biz.MqPushRepo {
+	return &mqPushRepo{data: data, c: cfg, log: log.NewHelper(logger)}
 }
 
 // AddUser . Add user.
 func (m *mqPushRepo) PushUserInfo(info *mq_consume.MqUserInfo) error {
-	_ = m.data.rabbitmqBroker.Publish(context.Background(), "user", info)
+	_ = m.data.rabbitmqBroker.Publish(context.Background(), m.c.Rabbitmq.Routing, info)
 	return nil
 }

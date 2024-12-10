@@ -25,7 +25,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, confRegistry *conf.Registry, logger log.Logger, registrar registry.Registrar) (*kratos.App, func(), error) {
-	broker := data.NewRabbitMQBroker(confData)
+	broker := data.NewRabbitMQBroker(confData, logger)
 	discovery := data.NewDiscovery(confRegistry)
 	userClient := data.NewUserRpcClient(discovery)
 	dataData, cleanup, err := data.NewData(confData, logger, broker, userClient)
@@ -35,7 +35,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, confRegistry *conf.Re
 	userRepo := data.NewUserRpcRepo(dataData, logger)
 	userUseCase := biz.NewUserUseCase(userRepo, logger)
 	userCountService := service.NewUserCountService(logger, userUseCase)
-	mqPushRepo := data.NewMqPushRepo(dataData, logger)
+	mqPushRepo := data.NewMqPushRepo(dataData, confData, logger)
 	mqPushUseCase := biz.NewMqPushUseCase(mqPushRepo, logger)
 	rabbitmqPushService := service.NewRabbitmqPushService(logger, mqPushUseCase)
 	cronService := service.NewJobService(userCountService, rabbitmqPushService)

@@ -24,13 +24,7 @@ func NewRabbitMQServer(cfg *conf.Data, _ log.Logger, svc *service.UserService) *
 		rabbitmq.WithExchange(cfg.Rabbitmq.Exchange, cfg.Rabbitmq.DurableExchange),
 	)
 	// 注册订阅者
-	registerRabbitMQSubscribers(ctx, srv, svc)
+	_ = rabbitmq.RegisterSubscriber(srv, ctx, cfg.Rabbitmq.Routing, svc.SaveUser, broker.WithQueueName("user"))
 
 	return srv
-}
-
-// registerRabbitMQSubscribers 注册订阅者
-func registerRabbitMQSubscribers(ctx context.Context, srv *rabbitmq.Server, svc *service.UserService) {
-	// 注册订阅者
-	_ = rabbitmq.RegisterSubscriber(srv, ctx, "user", svc.SaveUser, broker.WithQueueName("user"))
 }
