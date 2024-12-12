@@ -1,0 +1,41 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "kratos-project/app/cron/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  Trace trace = 3;
+}
+
+message Server {}
+
+message Data {
+  message Database {
+    string driver = 1;
+    string source = 2;
+  }
+  message Redis {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration read_timeout = 3;
+    google.protobuf.Duration write_timeout = 4;
+  }
+  Database database = 1;
+  Redis redis = 2;
+  RabbitMQ rabbitmq = 3;
+}
+
+message Trace {
+  string endpoint = 1;
+}
+
+message RabbitMQ {
+  repeated string addrs = 1;  // 对端网络地址
+  string codec = 2;  // 编解码器
+  string exchange = 3;  // 交换机
+  string routing = 4;  // 路由
+}

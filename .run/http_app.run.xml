@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="go build grpc_user" type="GoApplicationRunConfiguration" factoryName="Go Application">
+  <configuration default="false" name="http_app" type="GoApplicationRunConfiguration" factoryName="Go Application">
     <module name="kratos-project" />
     <working_directory value="$PROJECT_DIR$" />
     <go_parameters value="-p 8 -gcflags=&quot;all=-N -l&quot; -trimpath" />
-    <parameters value="-conf app/grpc_user/configs" />
+    <parameters value="-conf app/http_app/configs" />
     <kind value="PACKAGE" />
-    <package value="kratos-project/app/grpc_user/cmd/grpc_user" />
+    <package value="kratos-project/app/http_app/cmd/http_app/" />
     <directory value="$PROJECT_DIR$" />
     <filePath value="$PROJECT_DIR$" />
     <method v="2" />
