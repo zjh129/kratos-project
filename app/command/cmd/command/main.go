@@ -18,7 +18,7 @@ import (
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string = "kratos-project.command"
+	Name string = "kratos-project.cron"
 	// Version is the version of the compiled software.
 	Version string = "v0.0.1"
 	// flagconf is the config flag.
@@ -30,7 +30,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "app/command/configs", "config path, eg: -conf config.yaml")
 }
 
 func newApp(logger log.Logger, cms *server.CommandServer) *kratos.App {
@@ -57,11 +57,8 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
-	c := config.New(
-		config.WithSource(
-			file.NewSource(flagconf),
-		),
-	)
+	// init config
+	c := initConfig()
 	defer c.Close()
 
 	if err := c.Load(); err != nil {
@@ -73,7 +70,18 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	// 注册链路追踪
+	ctx := context.Background()
+	err := setTracerProvider(ctx, bc.Trace)
+	if err != nil {
+		log.Error(err)
+	}
+
+	// init registry
+	rConf := initRegistryConf()
+	rr := initRegistry(rConf)
+
+	app, cleanup, err := wireApp(bc.Server, bc.Data, rConf, logger, rr)
 	if err != nil {
 		panic(err)
 	}
