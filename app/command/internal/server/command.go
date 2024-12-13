@@ -15,15 +15,9 @@ type CommandServer struct {
 	rootCmd *cobra.Command
 }
 
-func NewCommandServer(jobSrc *service.CommandService, _ log.Logger) *CommandServer {
+func NewCommandServer(rootCmd *cobra.Command, jobSrc *service.CommandService, _ log.Logger) *CommandServer {
 	ser := &CommandServer{
-		rootCmd: &cobra.Command{
-			Use:   "kratos-project",
-			Short: "",
-			Run: func(cmd *cobra.Command, args []string) {
-				cmd.Help()
-			},
-		},
+		rootCmd: rootCmd,
 	}
 	if jobSrc != nil {
 		for _, job := range jobSrc.GetJobList() {

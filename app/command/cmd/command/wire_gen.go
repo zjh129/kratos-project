@@ -7,9 +7,8 @@
 package main
 
 import (
-	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/spf13/cobra"
 	"kratos-project/app/command/internal/biz"
 	"kratos-project/app/command/internal/conf"
 	"kratos-project/app/command/internal/data"
@@ -24,8 +23,8 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, confRegistry *conf.Registry, logger log.Logger, registrar registry.Registrar) (*kratos.App, func(), error) {
-	discovery := data.NewDiscovery(confRegistry)
+func wireApp(confServer *conf.Server, confData *conf.Data, registry *conf.Registry, command *cobra.Command, logger log.Logger) (*server.CommandServer, func(), error) {
+	discovery := data.NewDiscovery(registry)
 	userClient := data.NewUserRpcClient(discovery)
 	dataData, cleanup, err := data.NewData(confData, logger, userClient)
 	if err != nil {
@@ -35,9 +34,8 @@ func wireApp(confServer *conf.Server, confData *conf.Data, confRegistry *conf.Re
 	userUseCase := biz.NewUserUseCase(userRepo, logger)
 	demoService := service.NewDemoService(logger, userUseCase)
 	commandService := service.NewCommandService(demoService)
-	commandServer := server.NewCommandServer(commandService, logger)
-	app := newApp(logger, commandServer)
-	return app, func() {
+	commandServer := server.NewCommandServer(command, commandService, logger)
+	return commandServer, func() {
 		cleanup()
 	}, nil
 }

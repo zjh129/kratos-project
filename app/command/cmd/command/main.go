@@ -2,52 +2,54 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
-	"kratos-project/app/command/internal/server"
 	"os"
 
 	"kratos-project/app/command/internal/conf"
 
-	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+
+	"github.com/spf13/cobra"
 	_ "go.uber.org/automaxprocs"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string = "kratos-project.cron"
+	Name string
 	// Version is the version of the compiled software.
-	Version string = "v0.0.1"
+	Version string
 	// flagconf is the config flag.
 	flagconf string
-	// host name
-	hostname, _ = os.Hostname()
-	// id
-	id = fmt.Sprintf("%s/%s", hostname, Name)
+
+	id, _ = os.Hostname()
+
+	rootCmd = &cobra.Command{
+		Use:   Name,
+		Short: "",
+		PreRun: func(cmd *cobra.Command, args []string) {
+			// Parse flags here
+			if err := cmd.Flags().Parse(args); err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Help()
+		},
+	}
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "app/command/configs", "config path, eg: -conf config.yaml")
-}
-
-func newApp(logger log.Logger, cms *server.CommandServer) *kratos.App {
-	return kratos.New(
-		kratos.ID(id),
-		kratos.Name(Name),
-		kratos.Version(Version),
-		kratos.Metadata(map[string]string{}),
-		kratos.Logger(logger),
-		kratos.Server(
-			cms,
-		),
-	)
+	rootCmd.PersistentFlags().StringVar(&flagconf, "conf", flagconf, "config path, eg: --conf=app/cron/configs")
 }
 
 func main() {
-	flag.Parse()
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	logger := log.With(log.NewStdLogger(os.Stdout),
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
@@ -69,26 +71,18 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
-
-	// 注册链路追踪
 	ctx := context.Background()
-	err := setTracerProvider(ctx, bc.Trace)
-	if err != nil {
-		log.Error(err)
-	}
-
 	// init registry
 	rConf := initRegistryConf()
-	rr := initRegistry(rConf)
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, rConf, logger, rr)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, rConf, rootCmd, logger)
 	if err != nil {
 		panic(err)
 	}
 	defer cleanup()
 
 	// start and wait for stop signal
-	if err := app.Run(); err != nil {
+	if err := app.Start(ctx); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

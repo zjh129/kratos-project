@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"kratos-project/app/command/internal/biz"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -26,6 +27,9 @@ func (s *DemoService) GetCommand() *cobra.Command {
 		Short: "demo command",
 		Run: func(cmd *cobra.Command, args []string) {
 			s.log.Infof("demo command")
+			for i := 0; i < 10; i++ {
+				fmt.Println(i)
+			}
 		},
 	}
 }
