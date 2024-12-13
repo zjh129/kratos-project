@@ -53,7 +53,7 @@ func (s *DemoService) GetCommand() *cobra.Command {
 					progressbar.OptionEnableColorCodes(true),
 					progressbar.OptionShowBytes(true),
 					progressbar.OptionSetWidth(15),
-					progressbar.OptionSetDescription("[cyan]Downloading..."),
+					progressbar.OptionSetDescription("[cyan]下载中[reset]..."),
 					progressbar.OptionSetTheme(progressbar.Theme{
 						Saucer:        "[green]=[reset]",
 						SaucerHead:    "[green]>[reset]",
