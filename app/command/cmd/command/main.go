@@ -28,15 +28,8 @@ var (
 	rootCmd = &cobra.Command{
 		Use:   Name,
 		Short: "",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			// Parse flags here
-			if err := cmd.Flags().Parse(args); err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		},
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			//cmd.Help()
 		},
 	}
 )

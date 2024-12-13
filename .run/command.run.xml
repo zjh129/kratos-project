@@ -3,7 +3,7 @@
     <module name="kratos-project" />
     <working_directory value="$PROJECT_DIR$" />
     <go_parameters value="-p 8 -gcflags=&quot;all=-N -l&quot; -trimpath" />
-    <parameters value="--conf=app/cron/configs" />
+    <parameters value="--conf=app/cron/configs help" />
     <kind value="PACKAGE" />
     <package value="kratos-project/app/command/cmd/command/" />
     <directory value="$PROJECT_DIR$" />
