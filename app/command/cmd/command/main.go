@@ -17,9 +17,9 @@ import (
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string
+	Name string = "command"
 	// Version is the version of the compiled software.
-	Version string
+	Version string = "v0.0.1"
 	// flagconf is the config flag.
 	flagconf string
 
@@ -27,10 +27,7 @@ var (
 
 	rootCmd = &cobra.Command{
 		Use:   Name,
-		Short: "",
-		Run: func(cmd *cobra.Command, args []string) {
-			//cmd.Help()
-		},
+		Short: "command service",
 	}
 )
 
@@ -39,9 +36,14 @@ func init() {
 }
 
 func main() {
+	// 由于结合了cobra，所以需要执行rootCmd.Execute()，提前解析出整合程序执行的配置文件目录
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		//os.Exit(1)
+	}
+	// 由于cobra的rootCmd是一个空的命令，所以需要在rootCmd.Run中执行rootCmd.Help()，输出帮助信息
+	rootCmd.Run = func(cmd *cobra.Command, args []string) {
+		cmd.Help()
 	}
 	logger := log.With(log.NewStdLogger(os.Stdout),
 		"ts", log.DefaultTimestamp,

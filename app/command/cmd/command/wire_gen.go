@@ -32,7 +32,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, registry *conf.Regist
 	}
 	userRepo := data.NewUserRpcRepo(dataData, logger)
 	userUseCase := biz.NewUserUseCase(userRepo, logger)
-	demoService := service.NewDemoService(logger, userUseCase)
+	demoService := service.NewDemoService(logger, command, userUseCase)
 	commandService := service.NewCommandService(demoService)
 	commandServer := server.NewCommandServer(command, commandService, logger)
 	return commandServer, func() {
