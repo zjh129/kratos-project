@@ -36,11 +36,8 @@ func init() {
 }
 
 func main() {
-	// 由于结合了cobra，所以需要执行rootCmd.Execute()，提前解析出整合程序执行的配置文件目录
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		//os.Exit(1)
-	}
+	// 由于结合了cobra，所以需要执行rootCmd.Execute()，提前解析出整个程序执行的配置文件目录
+	_ = rootCmd.ParseFlags(os.Args[1:])
 	// 由于cobra的rootCmd是一个空的命令，所以需要在rootCmd.Run中执行rootCmd.Help()，输出帮助信息
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
 		cmd.Help()
