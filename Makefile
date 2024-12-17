@@ -29,65 +29,11 @@ init:
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
 	go install github.com/go-kratos/kratos/cmd/protoc-gen-go-errors/v2@latest
 
-.PHONY: config
-# generate internal proto
-config:
-	protoc --proto_path=./internal \
-	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./internal \
-	       $(INTERNAL_PROTO_FILES)
-
-.PHONY: api
-# generate api proto
-api:
-	protoc --proto_path=./api \
-	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./api \
- 	       --go-http_out=paths=source_relative:./api \
-	       --openapi_out=fq_schema_naming=true,default_response=false,naming=proto:. \
-	       $(API_PROTO_FILES)
-
-.PHONY: rpc
-# generate grpc proto
-rpc:
-	protoc --proto_path=./api \
-	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./api \
- 	       --go-grpc_out=paths=source_relative:./api \
-	       $(GRPC_PROTO_FILES)
-
-# generate api errors
-errors:
-	protoc --proto_path=. \
-             --proto_path=./third_party \
-             --go_out=paths=source_relative:. \
-             --go-errors_out=paths=source_relative:. \
-             $(API_PROTO_FILES)
-
-.PHONY: build
-# build
-build:
-	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./...
-
-.PHONY: ent
-ent:
-	cd internal/data/ && ent generate --feature intercept ./ent/schema
-
-.PHONY: entimport
-entimport:
-	cd internal/data/ && \
-    go run -mod=mod ariga.io/entimport/cmd/entimport -dsn "mysql://root:root@tcp(127.0.0.1:3306)/kratos_learn"
-
 .PHONY: generate
 # generate
 generate:
 	go generate ./...
 	go mod tidy
-
-.PHONY: run
-# run
-run:
-	kratos run
 
 .PHONY: docker
 # soft
@@ -103,7 +49,7 @@ wire:
 
 .PHONY: all
 # generate all
-all: api errors config generate
+all: init docker generate
 
 # show help
 help:

@@ -67,6 +67,19 @@ proto:
            --go_out=paths=source_relative:. \
            $(API_PROTO_FILES)
 
+.PHONY: entinit
+entinit:
+	cd internal/data/ && go run -mod=mod entgo.io/ent/cmd/ent init
+
+.PHONY: ent
+ent:
+	cd internal/data/ && go run -mod=mod entgo.io/ent/cmd/ent generate --feature intercept ./ent/schema
+
+.PHONY: entimport
+entimport:
+	cd internal/data/ && \
+    go run -mod=mod ariga.io/entimport/cmd/entimport -dsn "mysql://root:root@tcp(127.0.0.1:3306)/kratos_project"
+
 .PHONY: generate
 # generate client code
 generate:
@@ -86,19 +99,6 @@ test:
 run:
 	cd cmd/server/ && go run .
 
-.PHONY: entinit
-entinit:
-	cd internal/data/ && go run -mod=mod entgo.io/ent/cmd/ent init
-
-.PHONY: ent
-ent:
-	cd internal/data/ && go run -mod=mod entgo.io/ent/cmd/ent generate --feature intercept ./ent/schema
-
-.PHONY: entimport
-entimport:
-	cd internal/data/ && \
-    go run -mod=mod ariga.io/entimport/cmd/entimport -dsn "mysql://root:root@tcp(127.0.0.1:3306)/kratos_project"
-
 .PHONY: docker
 docker:
 	cd ../../.. && docker build -f deploy/build/Dockerfile --build-arg APP_RELATIVE_PATH=$(APP_RELATIVE_PATH) -t $(DOCKER_IMAGE) .
@@ -107,14 +107,6 @@ docker:
 # generate wire
 wire:
 	cd cmd/$(APP_RELATIVE_PATH) && wire
-
-.PHONY: api
-# generate api proto
-api: grpc http swagger errors
-
-.PHONY: all
-# generate all
-all: grpc http proto generate build test
 
 # show help
 help:

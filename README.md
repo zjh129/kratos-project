@@ -12,16 +12,30 @@
 - 该项目使用微服务大仓库模式，即一个仓库包含多个服务，每个服务都是一个独立的服务，通过make命令进行统一管理，make命令参考[beer-shop]项目集中管理，开发时进入对于的`app\模块`目录下通过命令执行make指令，指令在`app_makefile`中查看。
 
 ## 新建API或grpc协议文件
+> 项目目录下执行
 ```bash
+# 初始化项目需要的软件包
+make init
+# 启用项目运行需要的docker软件
+make docker
+# 生成项目需要的wire文件
+make wire
+# go mod tidy
+make tidy
+# 一键初始化项目运行需要的所有环境
+make all
+
+
 # 新建http服务协议文件
 kratos proto add api/http_admin/user.proto
 # 新建grpc服务协议文件
 kratos proto add api/grpc_user/user.proto
 # 新建mq消费数据协议文件
-kratos proto add api/mq/user.proto
+kratos proto add api/mq_consume/user.proto
 ```
 
 ## 新建服务
+> 项目目录下执行
 ```bash
 # 新建http服务
 kratos new app/http_admin/ --nomod
@@ -33,7 +47,39 @@ kratos new app/cron/ --nomod
 kratos new app/mq_consume/ --nomod
 ```
 
+## 模块开发常用命令
+> 进入app下某个模块下执行
+```bash
+# 模块配置文件proto生成go文件
+make config
+# 模块微服务proto生成go文件（仅用于微服务开发）
+make grpc
+# 模块http服务proto生成go文件（仅用于http服务开发）
+make http
+# 模块错误码proto生成go文件
+make errors
+# 模块proto文件生成go文件（一般用在根据proto协议生成go数据结构，纯粹用于数据结构定义）
+make proto
+# ent ORM初始化
+make entinit
+# ent ORM生成，根据`ent/schema`数据库表生成go文件
+make ent
+# ent ORM导入，导入数据库表数据schema，要求较高的请通过在线工具手动定制。
+make entimport
+# 模块wire生成
+make wire
+# generate代码生成
+make generate
+# 编译项目可执行程序
+make build
+# 运行测试
+make test
+# 运行
+make run
+```
+
 ## 运行系统配套服务
+> 项目目录下执行
 ```bash
 make docker
 ```
@@ -42,6 +88,12 @@ make docker
 - [Consul服务注册/服务发现/配置中心管理界面](http://127.0.0.1:8500/)
 - [Jaeger链路追踪管理界面](http://127.0.0.1:16686/)
 - [RabbitMq管理界面](http://127.0.0.1:15672/)
+
+## 开发常用命令
+> 进入app下某个模块下执行
+```bash
+
+```
 
 ## 参考项目
 - [Kratos Example](https://github.com/go-kratos/examples)

@@ -16,8 +16,11 @@ require (
 	github.com/google/wire v0.6.0
 	github.com/hashicorp/consul/api v1.30.0
 	github.com/mgtv-tech/jetcache-go v1.2.0
+	github.com/olekukonko/tablewriter v0.0.5
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/schollz/progressbar/v3 v3.17.1
+	github.com/spf13/cobra v1.8.1
 	github.com/tx7do/kratos-transport v1.1.12
 	github.com/tx7do/kratos-transport/broker/rabbitmq v1.2.17
 	github.com/tx7do/kratos-transport/transport/rabbitmq v1.2.18
@@ -72,17 +75,14 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/openzipkin/zipkin-go v0.4.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20221212215047-62379fc7944b // indirect
 	github.com/rabbitmq/amqp091-go v1.10.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/schollz/progressbar/v3 v3.17.1 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/shirou/gopsutil/v3 v3.23.6 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
-	github.com/spf13/cobra v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
