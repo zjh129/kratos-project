@@ -8,7 +8,7 @@
 
 ## 项目备注
 - 项目使用makefile管理操作命令，在linux、mac下运行更佳，windows不支持make命令，windows用户可以选择在wsl2子系统下开发（使用vscode远程开发体验最佳，或使用goland远程连接开发，但使用体验上很差）。
-- 通过kratos框架运行的服务，例如grpc、http、cron、mq消费等服务，为其他的kratos项目开发提供参考。
+- 通过kratos框架运行的服务，例如`grpc`、`http`、`cron`、`mq消费`、`cmd命令行`等服务，为其他的kratos项目开发提供参考。
 - 该项目使用微服务大仓库模式，即一个仓库包含多个服务，每个服务都是一个独立的服务，通过make命令进行统一管理，make命令参考[beer-shop]项目集中管理，开发时进入对于的`app\模块`目录下通过命令执行make指令，指令在`app_makefile`中查看。
 
 ## 新建API或grpc协议文件
